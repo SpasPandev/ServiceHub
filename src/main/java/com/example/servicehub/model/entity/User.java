@@ -1,6 +1,6 @@
 package com.example.servicehub.model.entity;
 
-import com.example.servicehub.model.entity.enumeration.Role;
+import com.example.servicehub.model.enumeration.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -34,7 +34,7 @@ public class User extends BaseEntity {
     private String phoneNumber;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
-    private Boolean isProvider;
+    private boolean isProvider;
 
     @Column(nullable = false)
     private Timestamp registerAt;
