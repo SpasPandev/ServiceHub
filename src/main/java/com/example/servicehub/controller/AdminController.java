@@ -51,12 +51,20 @@ public class AdminController {
         return adminService.removeAdminRole(userId, appUser);
     }
 
-    @PatchMapping("/deleteUser/{userId}")
+    @PatchMapping("/delete-user/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId,
                                              @AuthenticationPrincipal AppUser appUser) {
 
         return adminService.deleteUser(userId, appUser);
+    }
+
+    @PatchMapping("/restore-user/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> restoreUser(@PathVariable Long userId,
+                                              @AuthenticationPrincipal AppUser appUser) {
+
+        return adminService.restoreUser(userId, appUser);
     }
 
 }

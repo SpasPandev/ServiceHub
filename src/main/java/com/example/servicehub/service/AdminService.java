@@ -153,4 +153,27 @@ public class AdminService {
 
         return ResponseEntity.ok("User is deleted successfully!");
     }
+
+    public ResponseEntity<String> restoreUser(Long userId, AppUser appUser) {
+
+        User currentUser = userService.findUserByEmail(appUser.getUsername());
+
+        if (currentUser.getId().equals(userId)) {
+
+            return new ResponseEntity<>("You cannot restore your own account!",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        User foundedUser = userService.findUserById(userId);
+
+        if (!foundedUser.isDeleted()) {
+
+            return ResponseEntity.ok("This user is not deleted!");
+        }
+
+        foundedUser.setDeleted(false);
+        userService.saveUser(foundedUser);
+
+        return ResponseEntity.ok("User restored successfully!");
+    }
 }
