@@ -75,7 +75,7 @@ public class AdminService {
         }
 
         com.example.servicehub.model.entity.Service savedService =
-                serviceRepository.save(new com.example.servicehub.model.entity.Service()
+                serviceRepository.save(com.example.servicehub.model.entity.Service
                         .builder()
                         .serviceName(serviceRequestDto.getServiceName())
                         .serviceCategory(serviceCategoryOpt.get())
