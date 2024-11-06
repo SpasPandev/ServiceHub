@@ -4,11 +4,14 @@ import com.example.servicehub.config.AppUser;
 import com.example.servicehub.model.dto.LoginResponseDto;
 import com.example.servicehub.model.dto.LoginRequestDto;
 import com.example.servicehub.model.dto.RegisterRequestDto;
+import com.example.servicehub.model.dto.RegisterResponseDto;
 import com.example.servicehub.model.entity.Token;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.model.enumeration.TokenType;
 import com.example.servicehub.repository.TokenRepository;
 import com.example.servicehub.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,7 +39,7 @@ public class AuthenticationService {
     }
 
 
-    public LoginResponseDto register(RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<RegisterResponseDto> register(RegisterRequestDto registerRequestDto) {
 
         User user = new User();
         user.setEmail(registerRequestDto.getEmail());
@@ -53,10 +56,10 @@ public class AuthenticationService {
 
         saveUserToken(savedUser, jwtToken);
 
-        LoginResponseDto loginResponseDto = new LoginResponseDto();
-        loginResponseDto.setJwtToken(jwtToken);
+        RegisterResponseDto registerResponseDto = new RegisterResponseDto();
+        registerResponseDto.setJwtToken(jwtToken);
 
-        return loginResponseDto;
+        return new ResponseEntity<>(registerResponseDto, HttpStatus.CREATED);
     }
 
     private void saveUserToken(User user, String jwtToken) {
@@ -71,7 +74,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),
@@ -90,7 +93,7 @@ public class AuthenticationService {
         LoginResponseDto loginResponseDto = new LoginResponseDto();
         loginResponseDto.setJwtToken(jwtToken);
 
-        return loginResponseDto;
+        return ResponseEntity.ok(loginResponseDto);
     }
 
     private void revokeAllUserTokens(User user) {

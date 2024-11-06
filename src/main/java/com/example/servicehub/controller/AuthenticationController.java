@@ -3,10 +3,12 @@ package com.example.servicehub.controller;
 import com.example.servicehub.model.dto.LoginResponseDto;
 import com.example.servicehub.model.dto.LoginRequestDto;
 import com.example.servicehub.model.dto.RegisterRequestDto;
+import com.example.servicehub.model.dto.RegisterResponseDto;
 import com.example.servicehub.service.AuthenticationService;
 import com.example.servicehub.service.LogoutService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,13 +29,13 @@ public class AuthenticationController {
 
 
     @PostMapping("/register")
-    public LoginResponseDto register(@RequestBody RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto registerRequestDto) {
 
         return authenticationService.register(registerRequestDto);
     }
 
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
 
         return authenticationService.login(loginRequestDto);
     }
