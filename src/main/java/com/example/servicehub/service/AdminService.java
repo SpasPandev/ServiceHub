@@ -1,10 +1,13 @@
 package com.example.servicehub.service;
 
+import com.example.servicehub.config.AppUser;
 import com.example.servicehub.model.dto.ServiceCategoryDto;
 import com.example.servicehub.model.dto.ServiceCategoryRequestDto;
 import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.ServiceRequestDto;
 import com.example.servicehub.model.entity.ServiceCategory;
+import com.example.servicehub.model.entity.User;
+import com.example.servicehub.model.enumeration.Role;
 import com.example.servicehub.repository.ServiceCategoryRepository;
 import com.example.servicehub.repository.ServiceRepository;
 import jakarta.persistence.EntityExistsException;
@@ -21,11 +24,13 @@ public class AdminService {
 
     private final ServiceCategoryRepository serviceCategoryRepository;
     private final ServiceRepository serviceRepository;
+    private final UserService userService;
     private final ModelMapper modelMapper;
 
-    public AdminService(ServiceCategoryRepository serviceCategoryRepository, ServiceRepository serviceRepository, ModelMapper modelMapper) {
+    public AdminService(ServiceCategoryRepository serviceCategoryRepository, ServiceRepository serviceRepository, UserService userService, ModelMapper modelMapper) {
         this.serviceCategoryRepository = serviceCategoryRepository;
         this.serviceRepository = serviceRepository;
+        this.userService = userService;
         this.modelMapper = modelMapper;
     }
 
@@ -83,5 +88,42 @@ public class AdminService {
                         .build());
 
         return new ResponseEntity<>(modelMapper.map(savedService, ServiceDto.class), HttpStatus.CREATED);
+    }
+
+    public ResponseEntity<String> assignAdminRole(Long userId) {
+
+        User foundedUser = userService.findUserById(userId);
+
+        if (foundedUser.getRole().equals(Role.ADMIN)) {
+            return ResponseEntity.ok("This user is already with ADMIN role");
+        }
+
+        foundedUser.setRole(Role.ADMIN);
+
+        userService.saveUser(foundedUser);
+
+        return ResponseEntity.ok("Role Admin assigned successfully!");
+    }
+
+    public ResponseEntity<String> removeAdminRole(Long userId, AppUser appUser) {
+
+        User currentUser = userService.findUserByEmail(appUser.getUsername());
+
+        if (currentUser.getId().equals(userId)) {
+            return new ResponseEntity<>("You can't change your own role!", HttpStatus.BAD_REQUEST);
+
+        }
+
+        User foundedUser = userService.findUserById(userId);
+
+        if (foundedUser.getRole().equals(Role.USER)) {
+            return ResponseEntity.ok("This user is already with USER role");
+        }
+
+        foundedUser.setRole(Role.USER);
+
+        userService.saveUser(foundedUser);
+
+        return ResponseEntity.ok("Role Admin removed successfully!");
     }
 }

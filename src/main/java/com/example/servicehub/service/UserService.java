@@ -54,4 +54,22 @@ public class UserService {
                 modelMapper.map(currentUser, UpdatedProfileDto.class), HttpStatus.OK);
     }
 
+    public User findUserById(Long userId) {
+
+        return userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException("User with id: " + userId +
+                        " was not found!"));
+    }
+
+    public void saveUser(User user) {
+
+        userRepository.save(user);
+    }
+
+    public User findUserByEmail(String email) {
+
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User with email: " + email +
+                        " was not found!"));
+    }
 }

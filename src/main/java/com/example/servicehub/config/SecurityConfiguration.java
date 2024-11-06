@@ -1,5 +1,6 @@
 package com.example.servicehub.config;
 
+import com.example.servicehub.model.enumeration.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,6 +31,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         (authorizeHttpRequests) -> authorizeHttpRequests
                                 .requestMatchers("/v1/auth/**").permitAll()
+                                .requestMatchers("/v1/admin/**").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(
                         (sessionManagement) -> sessionManagement

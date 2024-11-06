@@ -1,5 +1,6 @@
 package com.example.servicehub.controller;
 
+import com.example.servicehub.config.AppUser;
 import com.example.servicehub.model.dto.ServiceCategoryDto;
 import com.example.servicehub.model.dto.ServiceCategoryRequestDto;
 import com.example.servicehub.model.dto.ServiceDto;
@@ -7,10 +8,9 @@ import com.example.servicehub.model.dto.ServiceRequestDto;
 import com.example.servicehub.service.AdminService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/admin")
@@ -23,14 +23,31 @@ public class AdminController {
     }
 
     @PostMapping("/create-service-category")
-    public ResponseEntity<ServiceCategoryDto> createServiceCategory(@Valid @RequestBody ServiceCategoryRequestDto serviceCategoryRequestDto){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ServiceCategoryDto> createServiceCategory(@Valid @RequestBody ServiceCategoryRequestDto serviceCategoryRequestDto) {
 
         return adminService.createServiceCategory(serviceCategoryRequestDto);
     }
 
     @PostMapping("/create-service")
-    public ResponseEntity<ServiceDto> createService(@Valid @RequestBody ServiceRequestDto serviceRequestDto){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ServiceDto> createService(@Valid @RequestBody ServiceRequestDto serviceRequestDto) {
 
         return adminService.createService(serviceRequestDto);
+    }
+
+    @PatchMapping("/assign-admin-role/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> assignAdminRole(@PathVariable Long userId) {
+
+        return adminService.assignAdminRole(userId);
+    }
+
+    @PatchMapping("/remove-admin-role/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> removeAdminRole(@PathVariable Long userId,
+                                                  @AuthenticationPrincipal AppUser appUser) {
+
+        return adminService.removeAdminRole(userId, appUser);
     }
 }
