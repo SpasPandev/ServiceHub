@@ -74,13 +74,18 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
+    public ResponseEntity<?> login(LoginRequestDto loginRequestDto) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),
                         loginRequestDto.getPassword()));
 
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow();
+
+        if (user.isDeleted()){
+            return new ResponseEntity<>("This account has been deleted!",
+                    HttpStatus.NOT_FOUND);
+        }
 
         AppUser appUser = new AppUser(user);
 
@@ -96,7 +101,7 @@ public class AuthenticationService {
         return ResponseEntity.ok(loginResponseDto);
     }
 
-    private void revokeAllUserTokens(User user) {
+    public void revokeAllUserTokens(User user) {
 
         List<Token> validUserTokens = tokenRepository.findAllByUserIdAndExpiredFalseAndRevokedFalse(user.getId());
 

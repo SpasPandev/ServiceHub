@@ -25,12 +25,14 @@ public class AdminService {
     private final ServiceCategoryRepository serviceCategoryRepository;
     private final ServiceRepository serviceRepository;
     private final UserService userService;
+    private final AuthenticationService authenticationService;
     private final ModelMapper modelMapper;
 
-    public AdminService(ServiceCategoryRepository serviceCategoryRepository, ServiceRepository serviceRepository, UserService userService, ModelMapper modelMapper) {
+    public AdminService(ServiceCategoryRepository serviceCategoryRepository, ServiceRepository serviceRepository, UserService userService, AuthenticationService authenticationService, ModelMapper modelMapper) {
         this.serviceCategoryRepository = serviceCategoryRepository;
         this.serviceRepository = serviceRepository;
         this.userService = userService;
+        this.authenticationService = authenticationService;
         this.modelMapper = modelMapper;
     }
 
@@ -125,5 +127,30 @@ public class AdminService {
         userService.saveUser(foundedUser);
 
         return ResponseEntity.ok("Role Admin removed successfully!");
+    }
+
+    public ResponseEntity<String> deleteUser(Long userId, AppUser appUser) {
+
+        User currentUser = userService.findUserByEmail(appUser.getUsername());
+
+        if (currentUser.getId().equals(userId)) {
+
+            return new ResponseEntity<>("You cannot delete your own account!",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        User foundedUser = userService.findUserById(userId);
+
+        if (foundedUser.isDeleted()) {
+
+            return new ResponseEntity<>("This user is already deleted!",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        foundedUser.setDeleted(true);
+        authenticationService.revokeAllUserTokens(foundedUser);
+        userService.saveUser(foundedUser);
+
+        return ResponseEntity.ok("User is deleted successfully!");
     }
 }

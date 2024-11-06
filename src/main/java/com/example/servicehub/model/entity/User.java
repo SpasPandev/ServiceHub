@@ -47,4 +47,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
+    @Column(columnDefinition = "boolean default false", nullable = false)
+    private boolean isDeleted;
 }

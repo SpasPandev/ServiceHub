@@ -50,4 +50,13 @@ public class AdminController {
 
         return adminService.removeAdminRole(userId, appUser);
     }
+
+    @PatchMapping("/deleteUser/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId,
+                                             @AuthenticationPrincipal AppUser appUser) {
+
+        return adminService.deleteUser(userId, appUser);
+    }
+
 }
