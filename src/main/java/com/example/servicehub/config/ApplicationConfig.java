@@ -1,6 +1,9 @@
 package com.example.servicehub.config;
 
+import com.example.servicehub.model.dto.UpdatedProfileDto;
+import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,6 +53,24 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
 
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        modelMapper
+                .typeMap(User.class, UpdatedProfileDto.class)
+                .addMappings(mapper ->
+                        mapper.map(User::getEmail, UpdatedProfileDto::setEmail))
+                .addMappings(mapper ->
+                        mapper.map(User::getName, UpdatedProfileDto::setName))
+                .addMappings(mapper ->
+                        mapper.map(User::getPhoneNumber, UpdatedProfileDto::setPhoneNumber))
+        ;
+
+        return modelMapper;
     }
 
 }
