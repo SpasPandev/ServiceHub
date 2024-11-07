@@ -11,6 +11,7 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
+@Table(name = "service")
 public class ServiceEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
