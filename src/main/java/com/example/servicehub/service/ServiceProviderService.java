@@ -153,4 +153,23 @@ public class ServiceProviderService {
                 .map(e -> modelMapper.map(e, ServiceDto.class))
                 .toList());
     }
+
+    public ResponseEntity<?> findAllByLocationAndService(String location, String serviceName) {
+
+        List<ServiceProvider> serviceProviderList = serviceProviderRepository
+                .findByLocationIgnoreCaseAndServiceEntity_ServiceName(location, serviceName);
+
+        if (serviceProviderList.isEmpty()) {
+
+            return new ResponseEntity<>(
+                    "There is no serviceProvider with serviceName (" +
+                            serviceName + ") in location: " + location,
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(serviceProviderList
+                .stream()
+                .map(e -> modelMapper.map(e, ServiceDto.class))
+                .toList());
+    }
 }
