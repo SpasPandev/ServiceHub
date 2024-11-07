@@ -172,4 +172,22 @@ public class ServiceProviderService {
                 .map(e -> modelMapper.map(e, ServiceDto.class))
                 .toList());
     }
+
+    public ResponseEntity<?> getMostLikedServiceProviders() {
+
+        List<ServiceProvider> mostLikedProvidersList =
+                serviceProviderRepository.findTopLikedProviders();
+
+        if (mostLikedProvidersList.isEmpty()) {
+
+            return new ResponseEntity<>(
+                    "No serviceProvider liked",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(mostLikedProvidersList
+                .stream()
+                .map(e -> modelMapper.map(e, ServiceDto.class))
+                .toList());
+    }
 }

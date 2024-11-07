@@ -73,4 +73,10 @@ public class ServiceProviderController {
         return serviceProviderService.findAllByLocationAndService(location, serviceName);
     }
 
+    @GetMapping("/most-liked")
+    public ResponseEntity<?> getMostLikedServiceProviders() {
+
+        return serviceProviderService.getMostLikedServiceProviders();
+    }
+
 }
