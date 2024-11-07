@@ -43,4 +43,10 @@ public class UserController {
         return userService.viewServiceProviderInfo(serviceProviderId);
     }
 
+    @PatchMapping("/like-service-info/{serviceProviderId}")
+    public ResponseEntity<ServiceDto> likeServiceProvider (@PathVariable Long serviceProviderId){
+
+        return userService.likeServiceProvider(serviceProviderId);
+    }
+
 }

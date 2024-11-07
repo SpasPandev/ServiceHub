@@ -132,4 +132,11 @@ public class UserService {
 
         return ResponseEntity.ok(modelMapper.map(serviceProviderService.findServiceProviderById(serviceProviderId), ServiceDto.class));
     }
+
+    public ResponseEntity<ServiceDto> likeServiceProvider(Long serviceProviderId) {
+
+        return ResponseEntity.ok(modelMapper.map(
+                serviceProviderService.likeServiceProvider(serviceProviderId),
+                ServiceDto.class));
+    }
 }

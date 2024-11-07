@@ -26,4 +26,16 @@ public class ServiceProviderService {
                 new ServiceProviderNotFoundException("ServiceProvider with id: " + serviceProviderId +
                         " was not found!"));
     }
+
+    public ServiceProvider likeServiceProvider(Long serviceProviderId) {
+
+        ServiceProvider serviceProvider = serviceProviderRepository.findById(serviceProviderId).orElseThrow(() ->
+                new ServiceProviderNotFoundException("ServiceProvider with id: " + serviceProviderId +
+                        " was not found!"));
+
+        serviceProvider.setLikesCount(serviceProvider.getLikesCount() + 1);
+        serviceProviderRepository.save(serviceProvider);
+
+        return serviceProvider;
+    }
 }
