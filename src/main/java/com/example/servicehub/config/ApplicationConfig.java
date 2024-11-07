@@ -86,9 +86,9 @@ public class ApplicationConfig {
                         map(source.getLocation(), destination.getLocation());
                         map(source.getServiceEntity().getServiceName(), destination.getServiceName());
                         map(source.getServiceEntity().getServiceCategory().getName(), destination.getServiceCategoryName());
-                        map(source.getProvider().getName(), destination.getProviderName());
-                        map(source.getProvider().getEmail(), destination.getProviderEmail());
-                        map(source.getProvider().getPhoneNumber(), destination.getProviderPhoneNumber());
+                        map(source.getProviderName(), destination.getProviderName());
+                        map(source.getProviderEmail(), destination.getProviderEmail());
+                        map(source.getProviderPhoneNumber(), destination.getProviderPhoneNumber());
                         map(source.getReviews(), destination.getReviews());
                     }
                 });

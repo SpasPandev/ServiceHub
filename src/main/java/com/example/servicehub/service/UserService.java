@@ -4,8 +4,8 @@ import com.example.servicehub.config.AppUser;
 import com.example.servicehub.exception.UserDeletedException;
 import com.example.servicehub.exception.UserNotFoundException;
 import com.example.servicehub.exception.ValidationException;
+import com.example.servicehub.model.dto.AddServiceProviderRequestDto;
 import com.example.servicehub.model.dto.EditProfileDto;
-import com.example.servicehub.model.dto.OfferServiceRequestDto;
 import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.UpdatedProfileDto;
 import com.example.servicehub.model.entity.ServiceProvider;
@@ -83,7 +83,7 @@ public class UserService {
                         " was not found!"));
     }
 
-    public ResponseEntity<ServiceDto> offerService(OfferServiceRequestDto offerServiceRequestDto, AppUser appUser) {
+    public ResponseEntity<ServiceDto> addServiceProvider(AddServiceProviderRequestDto addServiceProviderRequestDto, AppUser appUser) {
 
         User currentUser = getCurrentUser(appUser);
 
@@ -91,12 +91,15 @@ public class UserService {
 
         ServiceProvider serviceProvider = ServiceProvider
                 .builder()
-                .description(offerServiceRequestDto.getDescription())
+                .description(addServiceProviderRequestDto.getDescription())
                 .likesCount(0)
-                .location(offerServiceRequestDto.getLocation())
+                .location(addServiceProviderRequestDto.getLocation())
+                .providerName(addServiceProviderRequestDto.getProviderName())
+                .providerEmail(addServiceProviderRequestDto.getProviderEmail())
+                .providerPhoneNumber(addServiceProviderRequestDto.getProviderPhoneNumber())
                 .publishedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .provider(currentUser)
-                .serviceEntity(serviceService.findServiceByServiceName(offerServiceRequestDto.getServiceName()))
+                .serviceEntity(serviceService.findServiceByServiceName(addServiceProviderRequestDto.getServiceName()))
                 .reviews(new HashSet<>())
                 .build();
 
@@ -108,9 +111,9 @@ public class UserService {
             userRepository.save(currentUser);
         }
 
-        ServiceDto map = modelMapper.map(serviceProvider, ServiceDto.class);
-
-        return new ResponseEntity<>(map, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                modelMapper.map(serviceProvider, ServiceDto.class),
+                HttpStatus.CREATED);
     }
 
     private static void checkIfUserIsDeleted(User currentUser) {

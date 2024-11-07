@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OfferServiceRequestDto {
+public class AddServiceProviderRequestDto {
 
     @NotBlank(message = "Description is required")
     private String description;
@@ -16,5 +16,14 @@ public class OfferServiceRequestDto {
 
     @NotBlank(message = "Service name is required")
     private String serviceName;
+
+    @NotBlank(message = "Provider name is required")
+    private String providerName;
+
+    @NotBlank(message = "Provider email is required")
+    private String providerEmail;
+
+    @NotBlank(message = "Provider phoneNumber is required")
+    private String providerPhoneNumber;
 
 }
