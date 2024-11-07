@@ -42,6 +42,6 @@ public class ServiceDto {
     private String providerPhoneNumber;
 
     @NotNull(message = "Reviews list cannot be null.")
-    private List<Review> reviews;
+    private List<ReviewDto> reviews;
 
 }

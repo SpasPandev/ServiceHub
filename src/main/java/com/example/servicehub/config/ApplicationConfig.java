@@ -1,7 +1,9 @@
 package com.example.servicehub.config;
 
+import com.example.servicehub.model.dto.ReviewDto;
 import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.UpdatedProfileDto;
+import com.example.servicehub.model.entity.Review;
 import com.example.servicehub.model.entity.ServiceProvider;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.UserRepository;
@@ -90,6 +92,16 @@ public class ApplicationConfig {
                         map(source.getReviews(), destination.getReviews());
                     }
                 });
+
+        modelMapper
+                .addMappings(new PropertyMap<Review, ReviewDto>() {
+                    @Override
+                    protected void configure() {
+
+                        map(source.getUser().getName(), destination.getNameOfUser());
+                    }
+                })
+        ;
 
         return modelMapper;
     }
