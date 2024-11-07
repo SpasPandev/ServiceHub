@@ -37,4 +37,10 @@ public class UserController {
         return userService.offerService(offerServiceRequestDto, appUser);
     }
 
+    @GetMapping("/view-service-info/{serviceProviderId}")
+    public ResponseEntity<ServiceDto> viewServiceInfo(@PathVariable Long serviceProviderId){
+
+        return userService.viewServiceProviderInfo(serviceProviderId);
+    }
+
 }

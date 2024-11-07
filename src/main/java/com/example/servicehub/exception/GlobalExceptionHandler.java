@@ -75,4 +75,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ServiceProviderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleServiceProviderNotFoundException(ServiceProviderNotFoundException e) {
+
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
 }

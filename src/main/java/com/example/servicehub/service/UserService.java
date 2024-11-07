@@ -128,4 +128,8 @@ public class UserService {
                         appUser.getUsername() + " was not found"));
     }
 
+    public ResponseEntity<ServiceDto> viewServiceProviderInfo(Long serviceProviderId) {
+
+        return ResponseEntity.ok(modelMapper.map(serviceProviderService.findServiceProviderById(serviceProviderId), ServiceDto.class));
+    }
 }
