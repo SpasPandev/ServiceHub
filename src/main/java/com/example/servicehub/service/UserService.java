@@ -1,10 +1,14 @@
 package com.example.servicehub.service;
 
 import com.example.servicehub.config.AppUser;
+import com.example.servicehub.exception.UserDeletedException;
 import com.example.servicehub.exception.UserNotFoundException;
 import com.example.servicehub.exception.ValidationException;
 import com.example.servicehub.model.dto.EditProfileDto;
+import com.example.servicehub.model.dto.OfferServiceRequestDto;
+import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.UpdatedProfileDto;
+import com.example.servicehub.model.entity.ServiceProvider;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -13,14 +17,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+
 @Service
 public class UserService {
 
+    private final ServiceService serviceService;
+    private final ServiceProviderService serviceProviderService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+    public UserService(ServiceService serviceService, ServiceProviderService serviceProviderService, UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+        this.serviceService = serviceService;
+        this.serviceProviderService = serviceProviderService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
@@ -39,9 +51,7 @@ public class UserService {
             throw new ValidationException("This email is already used!");
         }
 
-        User currentUser = userRepository.findByEmail(appUser.getUsername())
-                .orElseThrow(() -> new UserNotFoundException("User with email: " +
-                        appUser.getUsername() + " was not found"));
+        User currentUser = getCurrentUser(appUser);
 
         currentUser.setEmail(editProfileDto.getEmail());
         currentUser.setName(editProfileDto.getName());
@@ -72,4 +82,50 @@ public class UserService {
                 new UserNotFoundException("User with email: " + email +
                         " was not found!"));
     }
+
+    public ResponseEntity<ServiceDto> offerService(OfferServiceRequestDto offerServiceRequestDto, AppUser appUser) {
+
+        User currentUser = getCurrentUser(appUser);
+
+        checkIfUserIsDeleted(currentUser);
+
+        ServiceProvider serviceProvider = ServiceProvider
+                .builder()
+                .description(offerServiceRequestDto.getDescription())
+                .likesCount(0)
+                .location(offerServiceRequestDto.getLocation())
+                .publishedAt(Timestamp.valueOf(LocalDateTime.now()))
+                .provider(currentUser)
+                .serviceEntity(serviceService.findServiceByServiceName(offerServiceRequestDto.getServiceName()))
+                .reviews(new HashSet<>())
+                .build();
+
+        serviceProviderService.saveServiceProvider(serviceProvider);
+
+        if (!currentUser.isProvider()) {
+
+            currentUser.setProvider(true);
+            userRepository.save(currentUser);
+        }
+
+        ServiceDto map = modelMapper.map(serviceProvider, ServiceDto.class);
+
+        return new ResponseEntity<>(map, HttpStatus.CREATED);
+    }
+
+    private static void checkIfUserIsDeleted(User currentUser) {
+
+        if (currentUser.isDeleted()) {
+
+            throw new UserDeletedException("The user account has been deleted and is no longer available.");
+        }
+    }
+
+    private User getCurrentUser(AppUser appUser) {
+
+        return userRepository.findByEmail(appUser.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("User with email: " +
+                        appUser.getUsername() + " was not found"));
+    }
+
 }
