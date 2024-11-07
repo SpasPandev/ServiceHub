@@ -3,6 +3,7 @@ package com.example.servicehub.controller;
 import com.example.servicehub.config.AppUser;
 import com.example.servicehub.model.dto.AddServiceProviderRequestDto;
 import com.example.servicehub.model.dto.ServiceDto;
+import com.example.servicehub.model.dto.ServiceProviderRequestDto;
 import com.example.servicehub.service.ServiceProviderService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,16 @@ public class ServiceProviderController {
     public ResponseEntity<ServiceDto> likeServiceProvider(@PathVariable Long serviceProviderId) {
 
         return serviceProviderService.likeServiceProvider(serviceProviderId);
+    }
+
+    @PatchMapping("/update-info/{serviceProviderId}")
+    public ResponseEntity<?> updateInfo(
+            @PathVariable Long serviceProviderId,
+            @Valid @RequestBody ServiceProviderRequestDto serviceProviderRequestDto,
+            @AuthenticationPrincipal AppUser appUser) {
+
+        return serviceProviderService.updateServiceProviderInfo(serviceProviderId,
+                serviceProviderRequestDto, appUser);
     }
 
 }

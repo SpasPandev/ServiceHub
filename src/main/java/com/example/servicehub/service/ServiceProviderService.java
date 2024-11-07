@@ -4,6 +4,7 @@ import com.example.servicehub.config.AppUser;
 import com.example.servicehub.exception.ServiceProviderNotFoundException;
 import com.example.servicehub.model.dto.AddServiceProviderRequestDto;
 import com.example.servicehub.model.dto.ServiceDto;
+import com.example.servicehub.model.dto.ServiceProviderRequestDto;
 import com.example.servicehub.model.entity.ServiceProvider;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.ServiceProviderRepository;
@@ -85,4 +86,33 @@ public class ServiceProviderService {
 
         return ResponseEntity.ok(modelMapper.map(serviceProvider, ServiceDto.class));
     }
+
+    public ResponseEntity<?> updateServiceProviderInfo(
+            Long serviceProviderId, ServiceProviderRequestDto serviceProviderRequestDto,
+            AppUser appUser) {
+
+        ServiceProvider serviceProvider = serviceProviderRepository.findById(serviceProviderId).orElseThrow(() ->
+                new ServiceProviderNotFoundException("ServiceProvider with id: " +
+                        serviceProviderId + " was not found!"));
+
+        User currentUser = userService.findUserByEmail(appUser.getUsername());
+
+        if (!currentUser.getServiceProviders().contains(serviceProvider)){
+
+            return new ResponseEntity<>("This serviceProvider belongs to another user!",
+                    HttpStatus.FORBIDDEN);
+        }
+
+        serviceProvider.setDescription(serviceProviderRequestDto.getDescription());
+        serviceProvider.setLocation(serviceProviderRequestDto.getLocation());
+        serviceProvider.setServiceEntity(serviceService.findServiceByServiceName(serviceProviderRequestDto.getServiceName()));
+        serviceProvider.setProviderName(serviceProviderRequestDto.getProviderName());
+        serviceProvider.setProviderEmail(serviceProviderRequestDto.getProviderEmail());
+        serviceProvider.setProviderPhoneNumber(serviceProviderRequestDto.getProviderPhoneNumber());
+
+        serviceProviderRepository.save(serviceProvider);
+
+        return ResponseEntity.ok(modelMapper.map(serviceProvider, ServiceDto.class));
+    }
+
 }
