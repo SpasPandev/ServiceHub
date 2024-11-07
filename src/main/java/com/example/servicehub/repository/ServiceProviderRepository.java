@@ -11,4 +11,6 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 
     List<ServiceProvider> findByLocationIgnoreCase(String location);
 
+    List<ServiceProvider> findByServiceEntity_ServiceName(String serviceName);
+
 }

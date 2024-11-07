@@ -135,4 +135,22 @@ public class ServiceProviderService {
                         .toList()
         );
     }
+
+    public ResponseEntity<?> findAllByServiceName(String serviceName) {
+
+        List<ServiceProvider> serviceProviderList = serviceProviderRepository
+                .findByServiceEntity_ServiceName(serviceName);
+
+        if (serviceProviderList.isEmpty()) {
+
+            return new ResponseEntity<>(
+                    "There is no serviceProvider with this serviceName: " + serviceName,
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(serviceProviderList
+                .stream()
+                .map(e -> modelMapper.map(e, ServiceDto.class))
+                .toList());
+    }
 }

@@ -59,4 +59,10 @@ public class ServiceProviderController {
         return serviceProviderService.findAllByLocation(location);
     }
 
+    @GetMapping("/find-by-service-name")
+    public ResponseEntity<?> findByServiceName(@RequestParam String serviceName) {
+
+        return serviceProviderService.findAllByServiceName(serviceName);
+    }
+
 }
