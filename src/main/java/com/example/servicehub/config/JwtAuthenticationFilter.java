@@ -1,7 +1,9 @@
 package com.example.servicehub.config;
 
+import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.TokenRepository;
 import com.example.servicehub.service.JwtService;
+import com.example.servicehub.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,11 +24,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UserService userService;
     private final TokenRepository tokenRepository;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, TokenRepository tokenRepository) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, UserService userService, TokenRepository tokenRepository) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
         this.tokenRepository = tokenRepository;
     }
 
@@ -58,6 +62,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElse(false);
 
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
+
+                //  checkIfUserIsDeleted
+                User user = userService.findUserByEmail(email);
+                if (user.isDeleted()) {
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.getWriter().write("User is deleted and cannot perform any actions!");
+                    return;
+                }
+
+                userService.findUserByEmail(email);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
