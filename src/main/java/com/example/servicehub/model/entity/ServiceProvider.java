@@ -21,7 +21,7 @@ public class ServiceProvider extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private ServiceEntity serviceEntity;
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String description;

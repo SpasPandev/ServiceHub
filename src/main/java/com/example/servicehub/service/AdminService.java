@@ -6,6 +6,7 @@ import com.example.servicehub.model.dto.ServiceCategoryDto;
 import com.example.servicehub.model.dto.ServiceCategoryRequestDto;
 import com.example.servicehub.model.dto.ServiceRequestDto;
 import com.example.servicehub.model.entity.ServiceCategory;
+import com.example.servicehub.model.entity.ServiceEntity;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.model.enumeration.Role;
 import com.example.servicehub.repository.ServiceCategoryRepository;
@@ -62,7 +63,7 @@ public class AdminService {
 
     public ResponseEntity<CreatedServiceDto> createService(ServiceRequestDto serviceRequestDto) {
 
-        Optional<com.example.servicehub.model.entity.Service> serviceOpt =
+        Optional<ServiceEntity> serviceOpt =
                 serviceRepository.findByServiceName(serviceRequestDto.getServiceName());
 
         if (serviceOpt.isPresent()) {
@@ -81,8 +82,8 @@ public class AdminService {
 
         }
 
-        com.example.servicehub.model.entity.Service savedService =
-                serviceRepository.save(com.example.servicehub.model.entity.Service
+        ServiceEntity savedService =
+                serviceRepository.save(ServiceEntity
                         .builder()
                         .serviceName(serviceRequestDto.getServiceName())
                         .serviceCategory(serviceCategoryOpt.get())

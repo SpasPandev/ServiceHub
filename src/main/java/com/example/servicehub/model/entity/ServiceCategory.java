@@ -21,6 +21,6 @@ public class ServiceCategory extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "serviceCategory")
-    private Set<Service> services;
+    private Set<ServiceEntity> services;
 
 }

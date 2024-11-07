@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Builder
 @AllArgsConstructor
-public class Service extends BaseEntity {
+public class ServiceEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String serviceName;
@@ -20,6 +20,6 @@ public class Service extends BaseEntity {
     @JoinColumn(name = "service_category_id", nullable = false)
     private ServiceCategory serviceCategory;
 
-    @OneToMany(mappedBy = "service")
+    @OneToMany(mappedBy = "serviceEntity")
     private Set<ServiceProvider> serviceProviders;
 }
