@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceProviderService {
@@ -97,7 +99,7 @@ public class ServiceProviderService {
 
         User currentUser = userService.findUserByEmail(appUser.getUsername());
 
-        if (!currentUser.getServiceProviders().contains(serviceProvider)){
+        if (!currentUser.getServiceProviders().contains(serviceProvider)) {
 
             return new ResponseEntity<>("This serviceProvider belongs to another user!",
                     HttpStatus.FORBIDDEN);
@@ -115,4 +117,22 @@ public class ServiceProviderService {
         return ResponseEntity.ok(modelMapper.map(serviceProvider, ServiceDto.class));
     }
 
+    public ResponseEntity<?> findAllByLocation(String location) {
+
+        List<ServiceProvider> serviceProviderList = serviceProviderRepository.findByLocationIgnoreCase(location);
+
+        if (serviceProviderList.isEmpty()) {
+
+            return new ResponseEntity<>(
+                    "There is no serviceProvider for this location: " + location,
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(
+                serviceProviderList
+                        .stream()
+                        .map(e -> modelMapper.map(e, ServiceDto.class))
+                        .toList()
+        );
+    }
 }

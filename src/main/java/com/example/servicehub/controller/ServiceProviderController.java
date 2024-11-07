@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/service-provider")
 public class ServiceProviderController {
@@ -49,6 +51,12 @@ public class ServiceProviderController {
 
         return serviceProviderService.updateServiceProviderInfo(serviceProviderId,
                 serviceProviderRequestDto, appUser);
+    }
+
+    @GetMapping("/find-by-location")
+    public ResponseEntity<?> findAllByLocation(@RequestParam String location){
+
+        return serviceProviderService.findAllByLocation(location);
     }
 
 }
