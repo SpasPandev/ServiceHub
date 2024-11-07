@@ -1,9 +1,9 @@
 package com.example.servicehub.controller;
 
 import com.example.servicehub.config.AppUser;
+import com.example.servicehub.model.dto.CreatedServiceDto;
 import com.example.servicehub.model.dto.ServiceCategoryDto;
 import com.example.servicehub.model.dto.ServiceCategoryRequestDto;
-import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.ServiceRequestDto;
 import com.example.servicehub.service.AdminService;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class AdminController {
 
     @PostMapping("/create-service")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ServiceDto> createService(@Valid @RequestBody ServiceRequestDto serviceRequestDto) {
+    public ResponseEntity<CreatedServiceDto> createService(@Valid @RequestBody ServiceRequestDto serviceRequestDto) {
 
         return adminService.createService(serviceRequestDto);
     }

@@ -1,9 +1,9 @@
 package com.example.servicehub.service;
 
 import com.example.servicehub.config.AppUser;
+import com.example.servicehub.model.dto.CreatedServiceDto;
 import com.example.servicehub.model.dto.ServiceCategoryDto;
 import com.example.servicehub.model.dto.ServiceCategoryRequestDto;
-import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.ServiceRequestDto;
 import com.example.servicehub.model.entity.ServiceCategory;
 import com.example.servicehub.model.entity.User;
@@ -60,7 +60,7 @@ public class AdminService {
                 HttpStatus.CREATED);
     }
 
-    public ResponseEntity<ServiceDto> createService(ServiceRequestDto serviceRequestDto) {
+    public ResponseEntity<CreatedServiceDto> createService(ServiceRequestDto serviceRequestDto) {
 
         Optional<com.example.servicehub.model.entity.Service> serviceOpt =
                 serviceRepository.findByServiceName(serviceRequestDto.getServiceName());
@@ -89,7 +89,7 @@ public class AdminService {
                         .serviceProviders(new HashSet<>())
                         .build());
 
-        return new ResponseEntity<>(modelMapper.map(savedService, ServiceDto.class), HttpStatus.CREATED);
+        return new ResponseEntity<>(modelMapper.map(savedService, CreatedServiceDto.class), HttpStatus.CREATED);
     }
 
     public ResponseEntity<String> assignAdminRole(Long userId) {
