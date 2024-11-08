@@ -13,4 +13,7 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     List<Token> findAllByUserIdAndExpiredFalseAndRevokedFalse(Long userId);
 
     Optional<Token> findByToken(String token);
+
+    void deleteAllByExpiredIsTrueAndRevokedIsTrue();
+
 }
