@@ -1,6 +1,7 @@
 package com.example.servicehub.service;
 
 import com.example.servicehub.config.AppUser;
+import com.example.servicehub.exception.UserDeletedException;
 import com.example.servicehub.model.dto.LoginResponseDto;
 import com.example.servicehub.model.dto.LoginRequestDto;
 import com.example.servicehub.model.dto.RegisterRequestDto;
@@ -74,7 +75,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public ResponseEntity<?> login(LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),
@@ -83,8 +84,8 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow();
 
         if (user.isDeleted()){
-            return new ResponseEntity<>("This account has been deleted!",
-                    HttpStatus.NOT_FOUND);
+
+            throw new UserDeletedException("This account has been deleted!");
         }
 
         AppUser appUser = new AppUser(user);
