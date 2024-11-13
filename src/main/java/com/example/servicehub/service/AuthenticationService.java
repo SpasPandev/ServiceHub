@@ -15,12 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -96,6 +98,11 @@ public class AuthenticationService {
 
         saveUserToken(user, jwtToken);
 
+//        HERE
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(appUser, null, appUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
+
         LoginResponseDto loginResponseDto = new LoginResponseDto();
         loginResponseDto.setJwtToken(jwtToken);
 
@@ -118,4 +125,8 @@ public class AuthenticationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
+    public Optional<User> findUserByEmail(String email) {
+
+        return userRepository.findByEmail(email);
+    }
 }

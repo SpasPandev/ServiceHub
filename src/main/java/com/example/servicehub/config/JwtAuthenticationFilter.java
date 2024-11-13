@@ -6,6 +6,7 @@ import com.example.servicehub.service.JwtService;
 import com.example.servicehub.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
@@ -40,12 +41,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String email;
+         String jwt = null;
+         String email = null;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 
+//            ////////////////////////////////////
+
+            // Retrieve JWT token from the cookie
+            Cookie[] cookies = request.getCookies();
+//            String jwt = null;
+
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("jwtToken".equals(cookie.getName())) {
+                        jwt = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
+            if (jwt == null){
+                filterChain.doFilter(request,response);
+            }
+            // Set the authentication context
+            email = jwtService.extractEmail(jwt);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+            if (jwt != null && jwtService.isTokenValid(jwt, userDetails)) {
+
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+
             filterChain.doFilter(request, response);
+
+//            ///////////////////////////
+//            filterChain.doFilter(request, response);
             return;
         }
 
