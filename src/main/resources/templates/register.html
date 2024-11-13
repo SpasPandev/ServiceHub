@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/commons::head">
+</head>
+
+
+<body>
+
+<!-- Navigation -->
+<!--<header th:replace="fragments/commons::navigation">-->
+<!--</header>-->
+<!-- End Navigation -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <div class="card flex-row my-5 border-0 shadow rounded-3 overflow-hidden">
+                <div class="card-body p-sm-5">
+                    <h3 class="text-center mb-3">Create an account</h3>
+
+                    <form
+                            th:object="${registerRequestDto}"
+                            th:action="@{/register}"
+                            th:method="post">
+
+                        <hr>
+
+                        <div>
+
+                            <div class="form-floating mb-3">
+                                <input
+                                        th:field="*{email}"
+                                        th:errorclass="is-invalid"
+                                        type="email" class="form-control" id="email">
+                                <label for="email">Email address</label>
+
+                                <p class="invalid-feedback alert alert-danger">
+                                    Email is required.
+                                </p>
+
+                                <p th:if="${emailExistsError} == true" class="alert alert-danger">
+                                    Email already exists. Please use a different email address.
+                                </p>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input
+                                        th:field="*{name}"
+                                        th:errorclass="is-invalid"
+                                        type="text" class="form-control" id="name">
+                                <label for="name">Name</label>
+
+                                <p class="invalid-feedback alert alert-danger">
+                                    Name is required.
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-floating mb-3">
+                            <input
+                                    th:field="*{password}"
+                                    th:errorclass="is-invalid"
+                                    type="password" class="form-control" id="password">
+                            <label for="password">Password</label>
+
+                            <p class="invalid-feedback alert alert-danger">
+                                Password is required.
+                            </p>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input
+                                    th:field="*{confirmPassword}"
+                                    th:errorclass="is-invalid"
+                                    type="password" class="form-control"
+                                    id="passwordRepeat">
+                            <label for="passwordRepeat">Repeat Password</label>
+
+                            <p class="invalid-feedback alert alert-danger">
+                                Repeat password is required.
+                            </p>
+                        </div>
+
+                        <p th:if="${showPasswordsDontMatchError} == true"
+                           class="alert alert-danger">
+                            The passwords didn't match.
+                        </p>
+
+                        <hr>
+
+                        <div>
+                            <div class="form-floating mb-3">
+                                <input
+                                        th:field="*{phoneNumber}"
+                                        th:errorclass="is-invalid"
+                                        type="text"
+                                        class="form-control"
+                                        id="phoneNumber"
+                                        required
+                                >
+                                <label for="phoneNumber">Phone number</label>
+
+                                <!-- Show error message if there's a validation error -->
+                                <p class="invalid-feedback alert alert-danger"
+                                   th:if="${#fields.hasErrors('phoneNumber')}">
+                                    <span th:errors="*{phoneNumber}"></span>
+                                </p>
+                            </div>
+                        </div>
+
+
+                        <hr>
+                        <div class="text-center mt-4 mb-2">
+                            <button class="btn btn-lg btn-primary fw-bold text-uppercase"
+                                    type="submit">Register
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <a class="d-block text-center mt-2 small" href="/login">Already have an account?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

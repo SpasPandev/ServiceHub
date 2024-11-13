@@ -2,9 +2,7 @@ package com.example.servicehub.service;
 
 import com.example.servicehub.config.AppUser;
 import com.example.servicehub.exception.UserDeletedException;
-import com.example.servicehub.model.dto.LoginResponseDto;
-import com.example.servicehub.model.dto.LoginRequestDto;
-import com.example.servicehub.model.dto.RegisterRequestDto;
+import com.example.servicehub.model.dto.*;
 import com.example.servicehub.model.dto.RegisterResponseDto;
 import com.example.servicehub.model.entity.Token;
 import com.example.servicehub.model.entity.User;
@@ -42,7 +40,21 @@ public class AuthenticationService {
     }
 
 
-    public ResponseEntity<RegisterResponseDto> register(RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<?> register(RegisterRequestDto registerRequestDto) {
+
+        if (!registerRequestDto.getPassword().equals(registerRequestDto.getConfirmPassword())) {
+
+            return new ResponseEntity<>(
+                    "Password and confirm password must match!",
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (userRepository.existsByEmail(registerRequestDto.getEmail())) {
+
+            return new ResponseEntity<>(
+                    "Email address is already in use. Please use a different email address.",
+                    HttpStatus.CONFLICT);
+        }
 
         User user = new User();
         user.setEmail(registerRequestDto.getEmail());
@@ -85,7 +97,7 @@ public class AuthenticationService {
 
         User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow();
 
-        if (user.isDeleted()){
+        if (user.isDeleted()) {
 
             throw new UserDeletedException("This account has been deleted!");
         }

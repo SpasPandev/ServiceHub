@@ -8,6 +8,7 @@ import com.example.servicehub.service.AuthenticationService;
 import com.example.servicehub.service.LogoutService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDto> register(@RequestBody RegisterRequestDto registerRequestDto) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
 
         return authenticationService.register(registerRequestDto);
     }
