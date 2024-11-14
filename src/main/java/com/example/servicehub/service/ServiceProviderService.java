@@ -207,4 +207,10 @@ public class ServiceProviderService {
                 .toList());
     }
 
+    public ResponseEntity<List<String>> getAllServiceNames() {
+        List<String> services = serviceService.findAllServiceNames();
+        return ResponseEntity.ok(services);
+    }
+
+
 }

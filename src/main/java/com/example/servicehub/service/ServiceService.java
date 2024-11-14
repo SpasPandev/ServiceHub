@@ -4,6 +4,8 @@ import com.example.servicehub.model.entity.ServiceEntity;
 import com.example.servicehub.repository.ServiceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ServiceService {
 
@@ -20,4 +22,11 @@ public class ServiceService {
                         " was not found!"));
     }
 
+    public List<String> findAllServiceNames() {
+
+        return serviceRepository.findAll()
+                .stream()
+                .map(ServiceEntity::getServiceName)
+                .toList();
+    }
 }

@@ -21,29 +21,64 @@ public class ServiceProviderControllerTL {
 
     @GetMapping()
     public String showHomePage(
-            @RequestParam(value = "sortByLikes", defaultValue = "false") boolean sortByLikes, Model model){
+            @RequestParam(value = "sortByLikes", defaultValue = "false") boolean sortByLikes,
+            @RequestParam(value = "location", required = false) String location,
+            @RequestParam(value = "serviceName", required = false) String serviceName,
+            Model model) {
 
         ResponseEntity<?> all;
 
         if (sortByLikes) {
-
             all = serviceProviderService.getMostLikedServiceProviders();
-        } else {
-
+        }
+        else {
             all = serviceProviderService.findAll();
         }
 
         if (all.getStatusCode() == HttpStatus.NOT_FOUND) {
-
             model.addAttribute("hasServiceProviders", false);
             return "service-provider";
         }
 
         model.addAttribute("hasServiceProviders", true);
         model.addAttribute("allServiceProviders", all.getBody());
-
         model.addAttribute("isSortedByLikes", sortByLikes);
+        model.addAttribute("servicesDropDown", serviceProviderService.getAllServiceNames().getBody());
+
+        if (location != null && !location.trim().isEmpty() &&
+                (serviceName == null || serviceName.trim().isEmpty())) {
+
+            ResponseEntity<?> filteredProvidersByLocation = serviceProviderService.findAllByLocation(location);
+
+            handleServiceProviderResponse(model, filteredProvidersByLocation);
+
+        }
+        else if (location != null && !location.trim().isEmpty()) {
+
+            ResponseEntity<?> filteredProviders = serviceProviderService.findAllByLocationAndService(location, serviceName);
+
+            handleServiceProviderResponse(model, filteredProviders);
+
+        }
+        else if (serviceName != null && !serviceName.trim().isEmpty()) {
+
+            ResponseEntity<?> filteredProvidersByService = serviceProviderService.findAllByServiceName(serviceName);
+
+            handleServiceProviderResponse(model, filteredProvidersByService);
+        }
 
         return "service-provider";
     }
+
+    private void handleServiceProviderResponse(Model model, ResponseEntity<?> response) {
+
+        if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            model.addAttribute("noResultsFound", true);
+            model.addAttribute("allServiceProviders", null);
+        }
+        else {
+            model.addAttribute("allServiceProviders", response.getBody());
+        }
+    }
+
 }

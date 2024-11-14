@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:replace="fragments/commons::head">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
@@ -16,12 +17,39 @@
 
     <div class="text-center mb-3">
 
-        <a href="/service-provider?sortByLikes=false" class="btn"
+        <form th:method="get" th:action="@{/service-provider}"
+              class="d-flex justify-content-center align-items-center g-3">
+
+            <div class="mb-3 d-flex align-items-center me-4">
+                <label for="location" class="form-label me-2">Location</label>
+                <input type="text" id="location" name="location"
+                       class="form-control" placeholder="Enter location"
+                       th:value="${location}">
+            </div>
+
+
+            <div class="mb-3 d-flex align-items-center me-4">
+                <label for="serviceName" class="form-label me-2">Service</label>
+                <select name="serviceName" id="serviceName" class="form-select">
+                    <option value="">Select Service</option>
+                    <option th:each="service : ${servicesDropDown}"
+                            th:value="${service}" th:text="${service}"></option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="text-center mb-3">
+        <a th:href="@{/service-provider?sortByLikes=false}" class="btn"
            th:classappend="${!isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
             Default View
         </a>
-
-        <a href="/service-provider?sortByLikes=true" class="btn"
+        <a th:href="@{/service-provider?sortByLikes=true}" class="btn"
            th:classappend="${isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
             Sorted by Likes
         </a>
@@ -29,10 +57,12 @@
 
     <div class="album py-5 bg-light">
         <div class="container">
-            <h3 th:if="${!hasServiceProviders}" class="text-center">No service providers</h3>
+
+            <h3 th:if="${noResultsFound}"
+                class="text-center">No service providers found based on your criteria</h3>
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                <!-- Each service provider -->
+                <!-- Display Each Service Provider -->
                 <div class="col mb-3" th:each="asp : ${allServiceProviders}" th:object="${asp}">
                     <div class="card shadow-sm">
                         <div class="card-body pb-1">
@@ -41,17 +71,18 @@
                         <div class="card-body pb-1">
                             <em class="text-muted" th:text="*{serviceCategoryName}">ServiceCategoryName</em>
                             <p class="card-title text-truncate">
-                                <em class="text-muted">Author: </em>
+                                <em class="text-muted">Provider: </em>
                                 <span th:text="*{providerName}">Provider name</span>
                             </p>
                         </div>
                         <div class="card-body">
                             <p class="card-text text-truncate"
-                               th:text="*{description.length() > 75 ? description.substring(0, 75) + '...' : description}">Description
-                            </p>
+                               th:text="*{description.length() > 75 ? description.substring(0, 75) + '...' : description}">
+                                Description</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a type="button" class="btn btn-outline-secondary" th:href="@{/}" role="button">Read more</a>
+                                    <a type="button" class="btn btn-outline-secondary"
+                                       th:href="@{/}" role="button">Read more</a>
                                 </div>
                                 <em class="text-muted">
                                     Likes: <span th:text="*{likesCount}">LikesCount</span>
@@ -64,6 +95,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 </body>
