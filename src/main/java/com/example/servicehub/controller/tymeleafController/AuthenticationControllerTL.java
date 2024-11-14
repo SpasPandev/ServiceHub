@@ -3,6 +3,7 @@ package com.example.servicehub.controller.tymeleafController;
 import com.example.servicehub.model.dto.*;
 import com.example.servicehub.service.AuthenticationService;
 import com.example.servicehub.service.LogoutService;
+import com.example.servicehub.utils.CookieUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,13 +46,7 @@ public class AuthenticationControllerTL {
 
         LoginResponseDto loginResponseDto = authenticationService.login(loginRequestDto).getBody();
 
-
-        Cookie jwtCookie = new Cookie("jwtToken", loginResponseDto.getJwtToken());
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60 * 60 * 24);
-        response.addCookie(jwtCookie);
+        CookieUtils.setJwtCookie(response, loginResponseDto.getJwtToken());
 
         return "redirect:/home";
     }
@@ -107,6 +102,8 @@ public class AuthenticationControllerTL {
                          Authentication authentication) {
 
         logoutService.logout(request, response, authentication);
+
+        CookieUtils.clearJwtCookie(response);
 
         return "redirect:/login";
     }
