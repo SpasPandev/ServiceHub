@@ -192,7 +192,7 @@ public class ServiceProviderService {
 
     public ResponseEntity<?> findAll() {
 
-        List<ServiceProvider> all = serviceProviderRepository.findAll();
+        List<ServiceProvider> all = serviceProviderRepository.findAllOrderByDesc();
 
         if (all.isEmpty()) {
 

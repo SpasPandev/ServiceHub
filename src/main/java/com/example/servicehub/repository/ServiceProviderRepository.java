@@ -18,4 +18,8 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 
     @Query("SELECT sp FROM ServiceProvider AS sp ORDER BY sp.likesCount DESC ")
     List<ServiceProvider> findTopLikedProviders();
+
+    @Query("SELECT sp FROM ServiceProvider AS sp ORDER BY sp.id DESC")
+    List<ServiceProvider> findAllOrderByDesc();
+
 }
