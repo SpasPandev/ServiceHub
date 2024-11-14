@@ -2,11 +2,14 @@ package com.example.servicehub.controller.tymeleafController;
 
 import com.example.servicehub.model.dto.*;
 import com.example.servicehub.service.AuthenticationService;
+import com.example.servicehub.service.LogoutService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,9 +22,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthenticationControllerTL {
 
     private final AuthenticationService authenticationService;
+    private final LogoutService logoutService;
 
-    public AuthenticationControllerTL(AuthenticationService authenticationService) {
+    public AuthenticationControllerTL(AuthenticationService authenticationService, LogoutService logoutService) {
         this.authenticationService = authenticationService;
+        this.logoutService = logoutService;
     }
 
     @ModelAttribute
@@ -95,6 +100,15 @@ public class AuthenticationControllerTL {
 
             return "redirect:/register";
         }
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response,
+                         Authentication authentication) {
+
+        logoutService.logout(request, response, authentication);
+
+        return "redirect:/login";
     }
 
 }

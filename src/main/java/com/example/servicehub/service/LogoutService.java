@@ -2,6 +2,7 @@ package com.example.servicehub.service;
 
 import com.example.servicehub.model.entity.Token;
 import com.example.servicehub.repository.TokenRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,8 @@ public class LogoutService implements LogoutHandler {
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 
+            clearJwtCookie(response);
+
             return;
         }
 
@@ -42,5 +45,15 @@ public class LogoutService implements LogoutHandler {
         }
 
         SecurityContextHolder.clearContext();
+    }
+
+    private static void clearJwtCookie(HttpServletResponse response) {
+
+        Cookie cookie = new Cookie("jwtToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 }
