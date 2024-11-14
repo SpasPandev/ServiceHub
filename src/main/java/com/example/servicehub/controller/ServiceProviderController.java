@@ -79,4 +79,10 @@ public class ServiceProviderController {
         return serviceProviderService.getMostLikedServiceProviders();
     }
 
+    @GetMapping("/view-all")
+    public ResponseEntity<?> viewAllServiceProviders() {
+
+        return serviceProviderService.findAll();
+    }
+
 }

@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ServiceProviderService {
@@ -181,7 +180,7 @@ public class ServiceProviderService {
         if (mostLikedProvidersList.isEmpty()) {
 
             return new ResponseEntity<>(
-                    "No serviceProvider liked",
+                    "No liked serviceProvider liked",
                     HttpStatus.NOT_FOUND);
         }
 
@@ -190,4 +189,22 @@ public class ServiceProviderService {
                 .map(e -> modelMapper.map(e, ServiceDto.class))
                 .toList());
     }
+
+    public ResponseEntity<?> findAll() {
+
+        List<ServiceProvider> all = serviceProviderRepository.findAll();
+
+        if (all.isEmpty()) {
+
+            return new ResponseEntity<>(
+                    "No serviceProvider found",
+                    HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(all
+                .stream()
+                .map(e -> modelMapper.map(e, ServiceDto.class))
+                .toList());
+    }
+
 }
