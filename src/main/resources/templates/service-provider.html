@@ -16,12 +16,12 @@
 
     <div class="text-center mb-3">
 
-        <a href="/home?sortByLikes=false" class="btn"
+        <a href="/service-provider?sortByLikes=false" class="btn"
            th:classappend="${!isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
             Default View
         </a>
 
-        <a href="/home?sortByLikes=true" class="btn"
+        <a href="/service-provider?sortByLikes=true" class="btn"
            th:classappend="${isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
             Sorted by Likes
         </a>

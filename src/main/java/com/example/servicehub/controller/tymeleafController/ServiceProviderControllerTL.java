@@ -6,18 +6,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class HomeControllerTL {
+@RequestMapping("/service-provider")
+public class ServiceProviderControllerTL {
 
     private final ServiceProviderService serviceProviderService;
 
-    public HomeControllerTL(ServiceProviderService serviceProviderService) {
+    public ServiceProviderControllerTL(ServiceProviderService serviceProviderService) {
         this.serviceProviderService = serviceProviderService;
     }
 
-    @GetMapping("/home")
+    @GetMapping()
     public String showHomePage(
             @RequestParam(value = "sortByLikes", defaultValue = "false") boolean sortByLikes, Model model){
 
@@ -34,7 +36,7 @@ public class HomeControllerTL {
         if (all.getStatusCode() == HttpStatus.NOT_FOUND) {
 
             model.addAttribute("hasServiceProviders", false);
-            return "home";
+            return "service-provider";
         }
 
         model.addAttribute("hasServiceProviders", true);
@@ -42,6 +44,6 @@ public class HomeControllerTL {
 
         model.addAttribute("isSortedByLikes", sortByLikes);
 
-        return "home";
+        return "service-provider";
     }
 }

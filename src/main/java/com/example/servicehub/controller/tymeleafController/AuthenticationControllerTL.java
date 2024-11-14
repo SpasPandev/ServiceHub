@@ -48,7 +48,7 @@ public class AuthenticationControllerTL {
 
         CookieUtils.setJwtCookie(response, loginResponseDto.getJwtToken());
 
-        return "redirect:/home";
+        return "redirect:/service-provider";
     }
 
     @GetMapping("/register")
