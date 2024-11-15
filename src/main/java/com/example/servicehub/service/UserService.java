@@ -92,12 +92,20 @@ public class UserService {
 
         User user = userRepository.findById(userId).orElse(null);
 
-        if (user == null){
+        if (user == null) {
 
             return new ResponseEntity<>("User with email: " +
                     userId + " was not found", HttpStatus.NOT_FOUND);
         }
 
         return ResponseEntity.ok(modelMapper.map(user, UserDto.class));
+    }
+
+    public boolean isProviderWithId(Long userId) {
+
+        return userRepository.findById(userId).orElseThrow(() ->
+                        new UserNotFoundException("User with id: " + userId +
+                                " was not found!"))
+                .isProvider();
     }
 }

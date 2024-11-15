@@ -11,6 +11,9 @@ import java.sql.Timestamp;
 public class UserDto {
 
     @NotBlank
+    private Long id;
+
+    @NotBlank
     private String email;
 
     @NotBlank

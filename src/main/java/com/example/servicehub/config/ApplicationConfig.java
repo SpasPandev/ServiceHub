@@ -90,6 +90,7 @@ public class ApplicationConfig {
                         map(source.getProviderEmail(), destination.getProviderEmail());
                         map(source.getProviderPhoneNumber(), destination.getProviderPhoneNumber());
                         map(source.getReviews(), destination.getReviews());
+                        map(source.getProvider().getId(), destination.getProviderId());
                     }
                 });
 

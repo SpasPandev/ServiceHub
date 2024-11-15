@@ -24,4 +24,6 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
 
     boolean existsByIdAndProvider_Email(Long serviceProviderId, String userEmail);
 
+    List<ServiceProvider> findAllByProvider_Id(Long providerId);
+
 }

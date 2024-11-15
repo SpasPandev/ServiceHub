@@ -6,10 +6,8 @@ import com.example.servicehub.model.dto.*;
 import com.example.servicehub.model.entity.Review;
 import com.example.servicehub.model.entity.ServiceProvider;
 import com.example.servicehub.model.entity.User;
-import com.example.servicehub.repository.ReviewRepository;
 import com.example.servicehub.repository.ServiceProviderRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -249,5 +247,13 @@ public class ServiceProviderService {
                 .stream()
                 .map(review -> modelMapper.map(review, ReviewDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<ServiceDto> getServiceProvidersByUserId(Long userId) {
+
+        return serviceProviderRepository.findAllByProvider_Id(userId)
+                .stream()
+                .map(s -> modelMapper.map(s, ServiceDto.class))
+                .toList();
     }
 }

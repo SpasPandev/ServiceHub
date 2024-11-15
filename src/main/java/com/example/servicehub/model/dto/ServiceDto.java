@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ServiceDto {
 
+    @NotBlank
     private Long id;
 
     @NotBlank(message = "Description is required")
@@ -44,5 +45,8 @@ public class ServiceDto {
 
     @NotNull(message = "Reviews list cannot be null.")
     private List<ReviewDto> reviews;
+
+    @NotBlank
+    private Long providerId;
 
 }
