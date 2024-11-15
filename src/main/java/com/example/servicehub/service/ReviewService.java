@@ -6,6 +6,7 @@ import com.example.servicehub.model.entity.ServiceProvider;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class ReviewService {
     }
 
 
+    @Transactional
     public Review saveReviewByInfo(ReviewRequestDto reviewRequestDto, ServiceProvider serviceProvider, User currentUser) {
 
         return reviewRepository.save(Review.builder()

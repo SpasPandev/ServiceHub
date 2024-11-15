@@ -13,6 +13,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -223,6 +224,7 @@ public class ServiceProviderService {
         return serviceProviderRepository.existsByIdAndProvider_Email(serviceProviderId, userEmail);
     }
 
+    @Transactional
     public ResponseEntity<?> addReview(Long serviceProviderId, String email, ReviewRequestDto reviewRequestDto) {
 
         User currentUser = userService.findUserByEmail(email);
@@ -234,8 +236,6 @@ public class ServiceProviderService {
             return new ResponseEntity<>("ServiceProvider with id: " + serviceProviderId +
                     " was not found!", HttpStatus.NOT_FOUND);
         }
-
-        reviewService.saveReviewByInfo(reviewRequestDto, serviceProvider, currentUser);
 
         Review savedReview = reviewService.saveReviewByInfo(reviewRequestDto, serviceProvider, currentUser);
 
