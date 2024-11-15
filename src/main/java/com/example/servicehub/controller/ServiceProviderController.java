@@ -2,6 +2,7 @@ package com.example.servicehub.controller;
 
 import com.example.servicehub.config.AppUser;
 import com.example.servicehub.model.dto.AddServiceProviderRequestDto;
+import com.example.servicehub.model.dto.ReviewRequestDto;
 import com.example.servicehub.model.dto.ServiceDto;
 import com.example.servicehub.model.dto.ServiceProviderRequestDto;
 import com.example.servicehub.service.ServiceProviderService;
@@ -35,6 +36,15 @@ public class ServiceProviderController {
     public ResponseEntity<ServiceDto> viewServiceProviderInfo(@PathVariable Long serviceProviderId) {
 
         return serviceProviderService.viewServiceProviderInfo(serviceProviderId);
+    }
+
+    @PostMapping("/view-service-provider-info/{serviceProviderId}/addReview")
+    public ResponseEntity<?> addReview(
+            @PathVariable Long serviceProviderId,
+            @AuthenticationPrincipal AppUser appUser,
+            @Valid @RequestBody ReviewRequestDto reviewRequestDto) {
+
+        return serviceProviderService.addReview(serviceProviderId, appUser.getUsername(), reviewRequestDto);
     }
 
     @PatchMapping("/like-service-info/{serviceProviderId}")

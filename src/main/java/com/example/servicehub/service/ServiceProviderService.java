@@ -2,11 +2,11 @@ package com.example.servicehub.service;
 
 import com.example.servicehub.config.AppUser;
 import com.example.servicehub.exception.ServiceProviderNotFoundException;
-import com.example.servicehub.model.dto.AddServiceProviderRequestDto;
-import com.example.servicehub.model.dto.ServiceDto;
-import com.example.servicehub.model.dto.ServiceProviderRequestDto;
+import com.example.servicehub.model.dto.*;
+import com.example.servicehub.model.entity.Review;
 import com.example.servicehub.model.entity.ServiceProvider;
 import com.example.servicehub.model.entity.User;
+import com.example.servicehub.repository.ReviewRepository;
 import com.example.servicehub.repository.ServiceProviderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,14 @@ public class ServiceProviderService {
 
     private final UserService userService;
     private final ServiceService serviceService;
+    private final ReviewService reviewService;
     private final ServiceProviderRepository serviceProviderRepository;
     private final ModelMapper modelMapper;
 
-    public ServiceProviderService(UserService userService, ServiceService serviceService, ServiceProviderRepository serviceProviderRepository, ModelMapper modelMapper) {
+    public ServiceProviderService(UserService userService, ServiceService serviceService, ReviewService reviewService, ServiceProviderRepository serviceProviderRepository, ModelMapper modelMapper) {
         this.userService = userService;
         this.serviceService = serviceService;
+        this.reviewService = reviewService;
         this.serviceProviderRepository = serviceProviderRepository;
         this.modelMapper = modelMapper;
     }
@@ -216,5 +218,24 @@ public class ServiceProviderService {
     public boolean isAuthorOnServiceProvider(Long serviceProviderId, String userEmail) {
 
         return serviceProviderRepository.existsByIdAndProvider_Email(serviceProviderId, userEmail);
+    }
+
+    public ResponseEntity<?> addReview(Long serviceProviderId, String email, ReviewRequestDto reviewRequestDto) {
+
+        User currentUser = userService.findUserByEmail(email);
+
+        ServiceProvider serviceProvider = serviceProviderRepository.findById(serviceProviderId).orElse(null);
+
+        if (serviceProvider == null) {
+
+            return new ResponseEntity<>("ServiceProvider with id: " + serviceProviderId +
+                    " was not found!", HttpStatus.NOT_FOUND);
+        }
+
+        reviewService.saveReviewByInfo(reviewRequestDto, serviceProvider, currentUser);
+
+        Review savedReview = reviewService.saveReviewByInfo(reviewRequestDto, serviceProvider, currentUser);
+
+        return ResponseEntity.ok(modelMapper.map(savedReview, ReviewDto.class));
     }
 }

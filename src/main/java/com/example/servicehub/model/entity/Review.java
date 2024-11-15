@@ -5,16 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @Entity
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
+@Builder
+@AllArgsConstructor
 public class Review extends BaseEntity {
 
     @ManyToOne
