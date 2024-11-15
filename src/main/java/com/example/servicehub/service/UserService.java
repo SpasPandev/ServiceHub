@@ -6,6 +6,7 @@ import com.example.servicehub.exception.UserNotFoundException;
 import com.example.servicehub.exception.ValidationException;
 import com.example.servicehub.model.dto.EditProfileDto;
 import com.example.servicehub.model.dto.UpdatedProfileDto;
+import com.example.servicehub.model.dto.UserDto;
 import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -85,5 +86,18 @@ public class UserService {
         return userRepository.findByEmail(appUser.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("User with email: " +
                         appUser.getUsername() + " was not found"));
+    }
+
+    public ResponseEntity<?> getUserProfileById(Long userId) {
+
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null){
+
+            return new ResponseEntity<>("User with email: " +
+                    userId + " was not found", HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(modelMapper.map(user, UserDto.class));
     }
 }

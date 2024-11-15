@@ -7,6 +7,7 @@ import com.example.servicehub.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,12 @@ public class UserController {
                                                            @AuthenticationPrincipal AppUser appUser) {
 
         return userService.updateProfile(editProfileDto, appUser);
+    }
+
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<?> viewProfile(@PathVariable Long userId) {
+
+        return userService.getUserProfileById(userId);
     }
 
 }
