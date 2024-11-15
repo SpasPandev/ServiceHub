@@ -44,7 +44,7 @@ public class ServiceProviderController {
             @AuthenticationPrincipal AppUser appUser,
             @Valid @RequestBody ReviewRequestDto reviewRequestDto) {
 
-        return serviceProviderService.addReview(serviceProviderId, appUser.getUsername(), reviewRequestDto);
+        return serviceProviderService.addReview(serviceProviderId, appUser.getUsername(), reviewRequestDto.getContent());
     }
 
     @PatchMapping("/like-service-info/{serviceProviderId}")

@@ -225,7 +225,7 @@ public class ServiceProviderService {
     }
 
     @Transactional
-    public ResponseEntity<?> addReview(Long serviceProviderId, String email, ReviewRequestDto reviewRequestDto) {
+    public ResponseEntity<?> addReview(Long serviceProviderId, String email, String reviewContent) {
 
         User currentUser = userService.findUserByEmail(email);
 
@@ -237,9 +237,9 @@ public class ServiceProviderService {
                     " was not found!", HttpStatus.NOT_FOUND);
         }
 
-        Review savedReview = reviewService.saveReviewByInfo(reviewRequestDto, serviceProvider, currentUser);
+        Review savedReview = reviewService.saveReviewByInfo(reviewContent, serviceProvider, currentUser);
 
-        return ResponseEntity.ok(modelMapper.map(savedReview, ReviewDto.class));
+        return new ResponseEntity<>(modelMapper.map(savedReview, ReviewDto.class), HttpStatus.CREATED);
     }
 
     public List<ReviewDto> getReviewsByServiceProviderIdOrderByPublishedAtDesc(Long serviceProviderId) {

@@ -23,10 +23,10 @@ public class ReviewService {
 
 
     @Transactional
-    public Review saveReviewByInfo(ReviewRequestDto reviewRequestDto, ServiceProvider serviceProvider, User currentUser) {
+    public Review saveReviewByInfo(String reviewContent, ServiceProvider serviceProvider, User currentUser) {
 
         return reviewRepository.save(Review.builder()
-                .content(reviewRequestDto.getContent())
+                .content(reviewContent)
                 .publishedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .serviceProvider(serviceProvider)
                 .user(currentUser)

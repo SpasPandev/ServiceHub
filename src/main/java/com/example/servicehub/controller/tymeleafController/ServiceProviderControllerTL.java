@@ -1,17 +1,18 @@
 package com.example.servicehub.controller.tymeleafController;
 
 import com.example.servicehub.config.AppUser;
+import com.example.servicehub.model.dto.LoginRequestDto;
+import com.example.servicehub.model.dto.LoginResponseDto;
 import com.example.servicehub.service.ServiceProviderService;
+import com.example.servicehub.utils.CookieUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/service-provider")
@@ -90,6 +91,29 @@ public class ServiceProviderControllerTL {
                 serviceProviderService.isAuthorOnServiceProvider(serviceProviderId, appUser.getUsername()));
 
         return "service-provider-info";
+    }
+
+    @PostMapping("/{id}/add-comment")
+    public String addReview(
+            @PathVariable("id") Long serviceProviderId,
+            @RequestParam("content") String content,
+            @AuthenticationPrincipal AppUser appUser,
+            Model model) {
+
+        ResponseEntity<?> response = serviceProviderService.addReview(serviceProviderId, appUser.getUsername(), content);
+
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+
+            model.addAttribute("serviceProviderInfo", serviceProviderService.viewServiceProviderInfo(serviceProviderId).getBody());
+            model.addAttribute("reviews", serviceProviderService.getReviewsByServiceProviderIdOrderByPublishedAtDesc(serviceProviderId));
+            model.addAttribute("isAuthor", serviceProviderService.isAuthorOnServiceProvider(serviceProviderId, appUser.getUsername()));
+
+            return "redirect:/service-provider/view-info/" + serviceProviderId;
+        }
+        else {
+            model.addAttribute("error", "Could not add your review. Please try again.");
+            return "service-provider-info";
+        }
     }
 
     private void handleServiceProviderResponse(Model model, ResponseEntity<?> response) {
