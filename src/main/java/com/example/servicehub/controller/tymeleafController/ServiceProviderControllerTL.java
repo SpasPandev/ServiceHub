@@ -83,6 +83,9 @@ public class ServiceProviderControllerTL {
         model.addAttribute("serviceProviderInfo",
                 serviceProviderService.viewServiceProviderInfo(serviceProviderId).getBody());
 
+        model.addAttribute("reviews",
+                serviceProviderService.getReviewsByServiceProviderIdOrderByPublishedAtDesc(serviceProviderId));
+
         model.addAttribute("isAuthor",
                 serviceProviderService.isAuthorOnServiceProvider(serviceProviderId, appUser.getUsername()));
 

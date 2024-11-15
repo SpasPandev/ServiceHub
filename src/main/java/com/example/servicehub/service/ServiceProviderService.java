@@ -9,14 +9,17 @@ import com.example.servicehub.model.entity.User;
 import com.example.servicehub.repository.ReviewRepository;
 import com.example.servicehub.repository.ServiceProviderRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceProviderService {
@@ -50,7 +53,7 @@ public class ServiceProviderService {
                 .publishedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .provider(currentUser)
                 .serviceEntity(serviceService.findServiceByServiceName(addServiceProviderRequestDto.getServiceName()))
-                .reviews(new HashSet<>())
+                .reviews(new ArrayList<>())
                 .build();
 
         serviceProviderRepository.save(serviceProvider);
@@ -237,5 +240,14 @@ public class ServiceProviderService {
         Review savedReview = reviewService.saveReviewByInfo(reviewRequestDto, serviceProvider, currentUser);
 
         return ResponseEntity.ok(modelMapper.map(savedReview, ReviewDto.class));
+    }
+
+    public List<ReviewDto> getReviewsByServiceProviderIdOrderByPublishedAtDesc(Long serviceProviderId) {
+
+        return reviewService
+                .findAllByServiceProviderIdOrderByPublishedAtDesc(serviceProviderId)
+                .stream()
+                .map(review -> modelMapper.map(review, ReviewDto.class))
+                .collect(Collectors.toList());
     }
 }

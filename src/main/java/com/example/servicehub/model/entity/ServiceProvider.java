@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -50,5 +50,5 @@ public class ServiceProvider extends BaseEntity {
     private Timestamp publishedAt;
 
     @OneToMany(mappedBy = "serviceProvider")
-    private Set<Review> reviews;
+    private List<Review> reviews;
 }
