@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Data
 @NoArgsConstructor
 public class ReviewDto {
@@ -15,5 +17,5 @@ public class ReviewDto {
     private String content;
 
     @NotBlank
-    private String publishedAt;
+    private Timestamp publishedAt;
 }

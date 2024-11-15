@@ -22,4 +22,6 @@ public interface ServiceProviderRepository extends JpaRepository<ServiceProvider
     @Query("SELECT sp FROM ServiceProvider AS sp ORDER BY sp.id DESC")
     List<ServiceProvider> findAllOrderByDesc();
 
+    boolean existsByIdAndProvider_Email(Long serviceProviderId, String userEmail);
+
 }

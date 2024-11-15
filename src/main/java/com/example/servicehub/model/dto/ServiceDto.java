@@ -1,6 +1,5 @@
 package com.example.servicehub.model.dto;
 
-import com.example.servicehub.model.entity.Review;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -13,6 +12,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ServiceDto {
+
+    private Long id;
 
     @NotBlank(message = "Description is required")
     private String description;

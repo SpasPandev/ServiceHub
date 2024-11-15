@@ -213,4 +213,8 @@ public class ServiceProviderService {
     }
 
 
+    public boolean isAuthorOnServiceProvider(Long serviceProviderId, String userEmail) {
+
+        return serviceProviderRepository.existsByIdAndProvider_Email(serviceProviderId, userEmail);
+    }
 }

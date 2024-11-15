@@ -82,7 +82,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a type="button" class="btn btn-outline-secondary"
-                                       th:href="@{/}" role="button">Read more</a>
+                                       th:href="@{/service-provider/view-info/{serviceProviderId}(serviceProviderId = *{id})}"
+                                       role="button">Read more</a>
                                 </div>
                                 <em class="text-muted">
                                     Likes: <span th:text="*{likesCount}">LikesCount</span>

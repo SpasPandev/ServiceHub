@@ -1,11 +1,15 @@
 package com.example.servicehub.controller.tymeleafController;
 
+import com.example.servicehub.config.AppUser;
 import com.example.servicehub.service.ServiceProviderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -68,6 +72,21 @@ public class ServiceProviderControllerTL {
         }
 
         return "service-provider";
+    }
+
+    @GetMapping("/view-info/{serviceProviderId}")
+    public String showServiceProviderInfo(
+            @PathVariable("serviceProviderId") Long serviceProviderId,
+            @AuthenticationPrincipal AppUser appUser,
+            Model model) {
+
+        model.addAttribute("serviceProviderInfo",
+                serviceProviderService.viewServiceProviderInfo(serviceProviderId).getBody());
+
+        model.addAttribute("isAuthor",
+                serviceProviderService.isAuthorOnServiceProvider(serviceProviderId, appUser.getUsername()));
+
+        return "service-provider-info";
     }
 
     private void handleServiceProviderResponse(Model model, ResponseEntity<?> response) {
