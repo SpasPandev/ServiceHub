@@ -16,24 +16,24 @@
 <div class="container mt-5 H">
 
     <div class="text-center mb-3">
+        <a th:href="@{/service-provider/add}" class="btn btn-success">
+            Add Service
+        </a>
+    </div>
 
-        <form th:method="get" th:action="@{/service-provider}"
-              class="d-flex justify-content-center align-items-center g-3">
-
+    <div class="text-center mb-3">
+        <form th:method="get" th:action="@{/service-provider}" class="d-flex justify-content-center align-items-center g-3">
             <div class="mb-3 d-flex align-items-center me-4">
                 <label for="location" class="form-label me-2">Location</label>
-                <input type="text" id="location" name="location"
-                       class="form-control" placeholder="Enter location"
+                <input type="text" id="location" name="location" class="form-control" placeholder="Enter location"
                        th:value="${location}">
             </div>
-
 
             <div class="mb-3 d-flex align-items-center me-4">
                 <label for="serviceName" class="form-label me-2">Service</label>
                 <select name="serviceName" id="serviceName" class="form-select">
                     <option value="">Select Service</option>
-                    <option th:each="service : ${servicesDropDown}"
-                            th:value="${service}" th:text="${service}"></option>
+                    <option th:each="service : ${servicesDropDown}" th:value="${service}" th:text="${service}"></option>
                 </select>
             </div>
 
@@ -42,7 +42,6 @@
             </div>
         </form>
     </div>
-
 
     <div class="text-center mb-3">
         <a th:href="@{/service-provider?sortByLikes=false}" class="btn"
@@ -57,9 +56,7 @@
 
     <div class="album py-5 bg-light">
         <div class="container">
-
-            <h3 th:if="${noResultsFound}"
-                class="text-center">No service providers found based on your criteria</h3>
+            <h3 th:if="${noResultsFound}" class="text-center">No service providers found based on your criteria</h3>
 
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <!-- Display Each Service Provider -->
@@ -77,8 +74,7 @@
                         </div>
                         <div class="card-body">
                             <p class="card-text text-truncate"
-                               th:text="*{description.length() > 75 ? description.substring(0, 75) + '...' : description}">
-                                Description</p>
+                               th:text="*{description.length() > 75 ? description.substring(0, 75) + '...' : description}">Description</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a type="button" class="btn btn-outline-secondary"

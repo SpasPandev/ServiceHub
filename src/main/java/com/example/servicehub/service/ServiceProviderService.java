@@ -256,4 +256,28 @@ public class ServiceProviderService {
                 .map(s -> modelMapper.map(s, ServiceDto.class))
                 .toList();
     }
+
+    @Transactional
+    public void addService(CreateServiceProviderDto createServiceProviderDto, AppUser appUser) {
+
+        User currentUser = userService.findUserByEmail(appUser.getUsername());
+
+        ServiceProvider serviceProvider = ServiceProvider.builder()
+                .description(createServiceProviderDto.getDescription())
+                .likesCount(0)
+                .location(createServiceProviderDto.getLocation())
+                .providerEmail(currentUser.getEmail())
+                .providerName(currentUser.getName())
+                .providerPhoneNumber(currentUser.getPhoneNumber())
+                .publishedAt(Timestamp.valueOf(LocalDateTime.now()))
+                .provider(currentUser)
+                .serviceEntity(serviceService.findServiceByServiceName(createServiceProviderDto.getServiceName()))
+                .build();
+
+        serviceProviderRepository.save(serviceProvider);
+
+        currentUser.setProvider(true);
+        userService.saveUser(currentUser);
+    }
+
 }

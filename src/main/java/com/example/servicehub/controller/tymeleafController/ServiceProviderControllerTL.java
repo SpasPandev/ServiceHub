@@ -1,18 +1,17 @@
 package com.example.servicehub.controller.tymeleafController;
 
 import com.example.servicehub.config.AppUser;
-import com.example.servicehub.model.dto.LoginRequestDto;
-import com.example.servicehub.model.dto.LoginResponseDto;
+import com.example.servicehub.model.dto.CreateServiceProviderDto;
 import com.example.servicehub.service.ServiceProviderService;
-import com.example.servicehub.utils.CookieUtils;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/service-provider")
@@ -22,6 +21,11 @@ public class ServiceProviderControllerTL {
 
     public ServiceProviderControllerTL(ServiceProviderService serviceProviderService) {
         this.serviceProviderService = serviceProviderService;
+    }
+
+    @ModelAttribute
+    public CreateServiceProviderDto CreateServiceProviderDto() {
+        return new CreateServiceProviderDto();
     }
 
     @GetMapping()
@@ -125,6 +129,34 @@ public class ServiceProviderControllerTL {
         else {
             model.addAttribute("allServiceProviders", response.getBody());
         }
+    }
+
+    @GetMapping("/add")
+    public String showAddServicePage(Model model) {
+
+        model.addAttribute("servicesDropDown", serviceProviderService.getAllServiceNames().getBody());
+
+        return "add-service";
+    }
+
+    @PostMapping("/add")
+    public String addService(@Valid CreateServiceProviderDto createServiceProviderDto,
+                             BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                             @AuthenticationPrincipal AppUser appUser) {
+
+        if (bindingResult.hasErrors()) {
+
+            redirectAttributes
+                    .addFlashAttribute("createServiceProviderDto", createServiceProviderDto);
+            redirectAttributes
+                    .addFlashAttribute("org.springframework.validation.BindingResult.createServiceProviderDto", bindingResult);
+
+            return "redirect:/service-provider/add";
+        }
+
+        serviceProviderService.addService(createServiceProviderDto, appUser);
+
+        return "redirect:/service-provider";
     }
 
 }
