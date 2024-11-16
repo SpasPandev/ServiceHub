@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EditProfileDto {
 
+    private Long id;
     @NotBlank
     private String email;
     @NotBlank

@@ -126,4 +126,15 @@ public class UserService {
         user.setDeleted(true);
         userRepository.save(user);
     }
+
+    public EditProfileDto getUserDtoByUserId(Long userId) {
+
+        EditProfileDto editProfileDto = modelMapper.map(userRepository.findById(userId).orElseThrow(() ->
+                        new UserNotFoundException("User with id: '" + userId + "' was not found!")),
+                EditProfileDto.class);
+
+        editProfileDto.setPassword("");
+        editProfileDto.setConfirmPassword("");
+        return editProfileDto;
+    }
 }
