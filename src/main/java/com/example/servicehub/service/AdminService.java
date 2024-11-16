@@ -1,10 +1,7 @@
 package com.example.servicehub.service;
 
 import com.example.servicehub.config.AppUser;
-import com.example.servicehub.model.dto.CreatedServiceDto;
-import com.example.servicehub.model.dto.ServiceCategoryDto;
-import com.example.servicehub.model.dto.ServiceCategoryRequestDto;
-import com.example.servicehub.model.dto.ServiceRequestDto;
+import com.example.servicehub.model.dto.*;
 import com.example.servicehub.model.entity.ServiceCategory;
 import com.example.servicehub.model.entity.ServiceEntity;
 import com.example.servicehub.model.entity.User;
@@ -17,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -176,5 +175,22 @@ public class AdminService {
         userService.saveUser(foundedUser);
 
         return ResponseEntity.ok("User restored successfully!");
+    }
+
+    public List<UserDto> findAllUsers() {
+
+        return userService.findAllUsers();
+    }
+
+    public void adminChangeUserRole(ChangeRoleDto changeRoleDto, Long id) {
+
+        User user = userService.findUserById(id);
+        user.setRole(changeRoleDto.getRole());
+        userService.saveUser(user);
+    }
+
+    public void setIsDeletedStatusTrue(Long id) {
+
+        userService.setIsDeletedStatusTrue(id);
     }
 }

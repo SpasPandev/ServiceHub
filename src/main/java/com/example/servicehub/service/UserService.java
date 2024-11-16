@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -107,5 +109,21 @@ public class UserService {
                         new UserNotFoundException("User with id: " + userId +
                                 " was not found!"))
                 .isProvider();
+    }
+
+    public List<UserDto> findAllUsers() {
+
+        return userRepository.findAll()
+                .stream()
+                .map(user -> modelMapper.map(user, UserDto.class))
+                .toList();
+    }
+
+    public void setIsDeletedStatusTrue(Long id) {
+
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("User with id: " + id + " was not found!"));
+        user.setDeleted(true);
+        userRepository.save(user);
     }
 }

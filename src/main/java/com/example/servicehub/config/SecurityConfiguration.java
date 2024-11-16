@@ -38,7 +38,7 @@ public class SecurityConfiguration {
                         (authorizeHttpRequests) -> authorizeHttpRequests
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers("/v1/auth/**", "/login", "/register", "/login-error").permitAll()
-                                .requestMatchers("/v1/admin/**").hasRole(Role.ADMIN.name())
+                                .requestMatchers("/v1/admin/**", "/admin/**").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .sessionManagement(
                         (sessionManagement) -> sessionManagement

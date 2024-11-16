@@ -1,5 +1,6 @@
 package com.example.servicehub.model.dto;
 
+import com.example.servicehub.model.enumeration.Role;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,7 @@ public class UserDto {
 
     @NotBlank
     private Timestamp registerAt;
+
+    private Role role;
 
 }
