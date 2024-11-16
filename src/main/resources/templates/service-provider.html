@@ -14,46 +14,53 @@
 
 <div class="container mt-5 H">
 
-    <div class="text-center mb-3">
-        <a th:href="@{/service-provider/add}" class="btn btn-success">
-            Add Service
-        </a>
-    </div>
-
-    <div class="text-center mb-3">
-        <form th:method="get" th:action="@{/service-provider}" class="d-flex justify-content-center align-items-center g-3">
-            <div class="mb-3 d-flex align-items-center me-4">
-                <label for="location" class="form-label me-2">Location</label>
-                <input type="text" id="location" name="location" class="form-control" placeholder="Enter location"
-                       th:value="${location}">
+    <div class="container">
+        <!-- Row for layout -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Sorting Buttons on the Left -->
+            <div class="d-flex">
+                <a th:href="@{/service-provider?sortByLikes=false}" class="btn me-2"
+                   th:classappend="${!isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
+                    Default View
+                </a>
+                <a th:href="@{/service-provider?sortByLikes=true}" class="btn me-2"
+                   th:classappend="${isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
+                    Sorted by Likes
+                </a>
             </div>
 
-            <div class="mb-3 d-flex align-items-center me-4">
-                <label for="serviceName" class="form-label me-2">Service</label>
-                <select name="serviceName" id="serviceName" class="form-select">
-                    <option value="">Select Service</option>
-                    <option th:each="service : ${servicesDropDown}" th:value="${service}" th:text="${service}"></option>
-                </select>
-            </div>
+            <!-- Form (Centered) -->
+            <form th:method="get" th:action="@{/service-provider}" class="d-flex justify-content-center align-items-center g-3 w-50">
+                <div class="d-flex align-items-center me-4 w-auto">
+                    <label for="location" class="form-label me-2">Location</label>
+                    <input type="text" id="location" name="location" class="form-control" placeholder="Enter location"
+                           th:value="${location}">
+                </div>
 
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <div class="d-flex align-items-center me-4 w-auto">
+                    <label for="serviceName" class="form-label me-2">Service</label>
+                    <select name="serviceName" id="serviceName" class="form-select">
+                        <option value="">Select Service</option>
+                        <option th:each="service : ${servicesDropDown}" th:value="${service}" th:text="${service}"></option>
+                    </select>
+                </div>
+
+                <div class="w-auto">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
+            </form>
+
+            <!-- Add Service Button on the Right -->
+            <div>
+                <a th:href="@{/service-provider/add}" class="btn btn-success">
+                    Add Service
+                </a>
             </div>
-        </form>
+        </div>
     </div>
 
-    <div class="text-center mb-3">
-        <a th:href="@{/service-provider?sortByLikes=false}" class="btn"
-           th:classappend="${!isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
-            Default View
-        </a>
-        <a th:href="@{/service-provider?sortByLikes=true}" class="btn"
-           th:classappend="${isSortedByLikes} ? 'btn-primary' : 'btn-outline-secondary'">
-            Sorted by Likes
-        </a>
-    </div>
 
-    <div class="album py-5 bg-light">
+    <div class="album py-5 bg-light border border-dark H overflow-auto">
         <div class="container">
             <h3 th:if="${noResultsFound}" class="text-center">No service providers found based on your criteria</h3>
 
@@ -73,7 +80,8 @@
                         </div>
                         <div class="card-body">
                             <p class="card-text text-truncate"
-                               th:text="*{description.length() > 75 ? description.substring(0, 75) + '...' : description}">Description</p>
+                               th:text="*{description.length() > 75 ? description.substring(0, 75) + '...' : description}">
+                                Description</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
                                     <a type="button" class="btn btn-outline-secondary"

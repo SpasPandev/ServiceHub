@@ -15,7 +15,7 @@
     <div class="row justify-content-center">
 
         <div class="col-md-8">
-            <div class="p-3 py-5">
+            <div class="p-3 py-4">
                 <h3>Add service</h3>
                 <br>
 
@@ -23,8 +23,8 @@
                         th:action="@{/service-provider/add}"
                         th:method="post"
                         th:object="${createServiceProviderDto}">
-                    <div class="row mt-3">
-                        <div class="form-group mt-4">
+                    <div class="row">
+                        <div class="form-group">
                             <label for="description">Description</label>
                             <textarea th:field="*{description}"
                                       th:errorclass="'is-invalid'"
@@ -36,7 +36,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mt-3">
                         <label for="location">Location</label>
                         <input th:field="*{location}"
                                th:errorclass="'is-invalid'"
@@ -51,7 +51,7 @@
                     <p>Choose service</p>
                     <div class="row mt-3">
                         <div class="form-group mx-2 col">
-                            <div class="mb-3 d-flex align-items-center me-4">
+                            <div class="mb-2 d-flex align-items-center me-4">
                                 <label for="serviceName" class="form-label me-2">Service</label>
                                 <select name="serviceName" id="serviceName" class="form-select"
                                         th:field="*{serviceName}" required>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 text-center">
+                    <div class="mt-2 text-center">
                         <button class="btn btn-primary profile-button" type="submit">Add service</button>
                     </div>
 

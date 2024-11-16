@@ -1,5 +1,9 @@
 body {
-    background: #e9ecef;
+    background: #e3ebf7;
+}
+
+header{
+    background: #3d69a1;
 }
 
 .hover:hover {
@@ -9,4 +13,8 @@ body {
 
 .H {
     height: 539px;
+}
+
+.h435 {
+    height: 435px;
 }

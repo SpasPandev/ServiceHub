@@ -122,28 +122,30 @@
             <div class="reviews mt-4">
                 <h4 class="text-center">Reviews</h4>
 
-                <div th:if="${#lists.isEmpty(serviceProviderInfo.reviews)}">
-                    <p class="text-center text-muted">No reviews yet.</p>
-                </div>
+                <div class="h435 overflow-auto border border-dark">
+                    <div th:if="${#lists.isEmpty(serviceProviderInfo.reviews)}">
+                        <p class="text-center text-muted">No reviews yet.</p>
+                    </div>
 
-                <div th:each="review : ${reviews}">
-                    <div class="review-item border p-3 mb-3 rounded">
+                    <div th:each="review : ${reviews}">
+                        <div class="review-item border p-3 mb-3 rounded">
 
-                        <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between">
 
-                            <div>
-                                <p th:text="${review.content}" class="mt-2">This is a review content.</p>
-                            </div>
+                                <div>
+                                    <p th:text="${review.content}" class="mt-2">This is a review content.</p>
+                                </div>
 
-                            <div class="text-right">
-                                <em>Publisher: </em>
-                                <small class="reviewer-name font-weight-bold" th:text="${review.nameOfUser}">Reviewer
-                                    Name</small>
-                                <br>
-                                <em>Publish at: </em>
-                                <small class="text-muted"
-                                       th:text="${#dates.format(review.publishedAt, 'yyyy-MM-dd HH:mm:ss')}">Review
-                                    Date</small>
+                                <div class="text-right">
+                                    <em>Publisher: </em>
+                                    <small class="reviewer-name font-weight-bold" th:text="${review.nameOfUser}">Reviewer
+                                        Name</small>
+                                    <br>
+                                    <em>Publish at: </em>
+                                    <small class="text-muted"
+                                           th:text="${#dates.format(review.publishedAt, 'yyyy-MM-dd HH:mm:ss')}">Review
+                                        Date</small>
+                                </div>
                             </div>
                         </div>
                     </div>
