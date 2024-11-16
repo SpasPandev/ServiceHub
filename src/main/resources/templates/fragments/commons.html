@@ -34,6 +34,8 @@
                 <th:block sec:authorize="isAuthenticated()">
                     <a th:href="@{/service-provider}" class="btn btn-outline-light me-2">Home</a>
 
+                    <a th:href="@{/user/profile/{userId}(userId  = ${#authentication.principal.id})}"
+                       class="btn btn-outline-light me-2">My Profile</a>
 
                     <a sec:authorize="hasRole('ADMIN')"
                        th:href="@{/admin}" class="btn btn-outline-light me-2">Admin Panel</a>
