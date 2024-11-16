@@ -84,9 +84,19 @@
                 Service Description
             </p>
 
-            <div class="row justify-content-between">
-                <span th:text="|Likes: | + *{likesCount}"
-                      class="col-auto text-right ml-auto">Likes Count</span>
+            <div class="d-flex justify-content-end align-items-center mt-4">
+
+                <form th:action="@{/service-provider/view-info/like/{serviceProviderId}(serviceProviderId=${serviceProviderInfo.id})}" method="post" class="mr-3">
+                    <button type="submit" class="btn btn-primary btn-sm me-3">
+                        <i class="bi bi-heart-fill"></i> Like
+                    </button>
+                </form>
+
+                <span th:text="|Likes: | + *{likesCount}" class="text-right">Likes Count</span>
+            </div>
+
+            <div th:if="${likeMessage}" class="alert alert-success mt-3">
+                <strong>Success!</strong> You liked this service provider.
             </div>
 
             <div class="reviews mt-4">

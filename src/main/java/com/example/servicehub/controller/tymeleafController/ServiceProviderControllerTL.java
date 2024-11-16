@@ -159,4 +159,26 @@ public class ServiceProviderControllerTL {
         return "redirect:/service-provider";
     }
 
+    @PostMapping("/view-info/like/{serviceProviderId}")
+    public String likeServiceProvider(
+            @PathVariable Long serviceProviderId,
+            @AuthenticationPrincipal AppUser appUser,
+            Model model) {
+
+        ResponseEntity<?> response = serviceProviderService.likeServiceProvider(serviceProviderId);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+
+            model.addAttribute("likeMessage", "You liked this service provider.");
+            model.addAttribute("serviceProviderInfo", serviceProviderService.viewServiceProviderInfo(serviceProviderId).getBody());
+            model.addAttribute("reviews", serviceProviderService.getReviewsByServiceProviderIdOrderByPublishedAtDesc(serviceProviderId));
+            model.addAttribute("isAuthor", serviceProviderService.isAuthorOnServiceProvider(serviceProviderId, appUser.getUsername()));
+            return "service-provider-info";
+        }
+        else {
+            model.addAttribute("error", "Could not like the service provider. Please try again.");
+            return "service-provider-info";
+        }
+    }
+
 }
