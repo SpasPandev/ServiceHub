@@ -61,7 +61,9 @@
             </table>
         </div>
 
-
+        <div th:if="${serviceProviders.isEmpty()}">
+            <p class="mt-4 text-muted">You don't provide any services yet!</p>
+        </div>
 
         <th:block th:if="${noServiceMessage}">
             <p th:text="${noServiceMessage}" class="alert alert-warning"></p>
