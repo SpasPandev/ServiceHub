@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -41,14 +43,32 @@ public class AuthenticationControllerTL {
     }
 
     @PostMapping("/login")
-    public String login(
-            LoginRequestDto loginRequestDto, HttpServletResponse response, Model model) {
+    public String login(@RequestParam String email, @RequestParam String password,
+                        HttpServletResponse response, Model model) {
 
-        LoginResponseDto loginResponseDto = authenticationService.login(loginRequestDto).getBody();
+        try {
+            LoginRequestDto loginRequestDto = new LoginRequestDto();
+            loginRequestDto.setPassword(password);
+            loginRequestDto.setEmail(email);
 
-        CookieUtils.setJwtCookie(response, loginResponseDto.getJwtToken());
+            ResponseEntity<?> loginResponse = authenticationService.login(loginRequestDto);
 
-        return "redirect:/service-provider";
+            if (loginResponse.getStatusCode() == HttpStatus.GONE) {
+
+                model.addAttribute("showErrorMessDeletedUser", true);
+                return "login";
+            }
+
+            LoginResponseDto loginResponseDto = (LoginResponseDto) loginResponse.getBody();
+
+            CookieUtils.setJwtCookie(response, loginResponseDto.getJwtToken());
+
+            return "redirect:/service-provider";
+        }
+        catch (BadCredentialsException e) {
+            model.addAttribute("showErrorMess", true);
+            return "login";
+        }
     }
 
     @GetMapping("/register")
@@ -87,7 +107,8 @@ public class AuthenticationControllerTL {
         if (registerResponseEntity.getStatusCode() == HttpStatus.CREATED) {
 
             return "redirect:/login";
-        } else {
+        }
+        else {
 
             redirectAttributes
                     .addFlashAttribute("showPasswordsDontMatchError", true)
