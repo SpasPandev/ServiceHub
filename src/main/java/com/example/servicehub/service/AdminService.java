@@ -193,4 +193,12 @@ public class AdminService {
 
         userService.setIsDeletedStatusTrue(id);
     }
+
+    public List<String> findAllServiceCategories() {
+        List<String> list = serviceCategoryRepository.findAll()
+                .stream()
+                .map(ServiceCategory::getName)
+                .toList();
+        return list;
+    }
 }

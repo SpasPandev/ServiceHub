@@ -1,7 +1,7 @@
 package com.example.servicehub.controller.tymeleafController;
 
 import com.example.servicehub.config.AppUser;
-import com.example.servicehub.model.dto.ChangeRoleDto;
+import com.example.servicehub.model.dto.*;
 import com.example.servicehub.model.enumeration.Role;
 import com.example.servicehub.service.AdminService;
 import jakarta.validation.Valid;
@@ -31,13 +31,23 @@ public class AdminControllerTL {
         return new ChangeRoleDto();
     }
 
+    @ModelAttribute
+    public ServiceCategoryRequestDto serviceCategoryRequestDto() {
+        return new ServiceCategoryRequestDto();
+    }
+
+    @ModelAttribute
+    public ServiceRequestDto serviceRequestDto() {
+        return new ServiceRequestDto();
+    }
+
     @GetMapping()
     public String adminPanel(Model model, @AuthenticationPrincipal AppUser appUser) {
 
         model.addAttribute("allUsers", adminService.findAllUsers());
         model.addAttribute("roleDropDown", List.of(Role.ADMIN, Role.USER));
         model.addAttribute("currentUserId", appUser.id());
-
+        model.addAttribute("allCategories", adminService.findAllServiceCategories());
         return "admin";
     }
 
@@ -77,4 +87,39 @@ public class AdminControllerTL {
 
         return "redirect:/admin";
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/create-service-category")
+    public String createServiceCategory(
+            @Valid @ModelAttribute ServiceCategoryRequestDto serviceCategoryRequestDto,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            return "redirect:/admin";
+        }
+
+        adminService.createServiceCategory(serviceCategoryRequestDto);
+        redirectAttributes.addFlashAttribute(
+                "message", "Service Category created successfully!");
+
+        return "redirect:/admin";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/create-service")
+    public String createService(
+            @Valid @ModelAttribute ServiceRequestDto serviceRequestDto,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            return "redirect:/admin";
+        }
+
+        adminService.createService(serviceRequestDto);
+        redirectAttributes.addFlashAttribute("message", "Service created successfully!");
+        return "redirect:/admin";
+    }
+
 }
