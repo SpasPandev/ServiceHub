@@ -111,8 +111,6 @@ public class ServiceProviderService {
         serviceProvider.setDescription(serviceProviderRequestDto.getDescription());
         serviceProvider.setLocation(serviceProviderRequestDto.getLocation());
         serviceProvider.setServiceEntity(serviceService.findServiceByServiceName(serviceProviderRequestDto.getServiceName()));
-        serviceProvider.setProviderName(serviceProviderRequestDto.getProviderName());
-        serviceProvider.setProviderEmail(serviceProviderRequestDto.getProviderEmail());
         serviceProvider.setProviderPhoneNumber(serviceProviderRequestDto.getProviderPhoneNumber());
 
         serviceProviderRepository.save(serviceProvider);

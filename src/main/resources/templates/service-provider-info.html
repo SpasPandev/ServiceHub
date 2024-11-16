@@ -10,6 +10,11 @@
 <!-- End Navigation -->
 
 <div class="container rounded bg-white mt-5 mb-5 p-3">
+
+    <div th:if="${updatedMessage}" class="alert alert-success mt-3 text-center">
+        <strong>Success!</strong> You update this service provider.
+    </div>
+
     <div th:object="${serviceProviderInfo}" class="row justify-content-center">
         <div class="col-md-8">
 
@@ -71,7 +76,7 @@
 
                     <div class="card-body">
                         <a th:href="@{/user/profile/{userId}(userId=*{providerId})}"
-                           class="btn btn-custom profile-button">
+                           class="btn btn-outline-dark profile-button mt-2">
                             <i class="bi bi-person-fill"></i> View Profile
                         </a>
                     </div>
@@ -80,22 +85,37 @@
 
             <hr>
 
-            <p th:text="*{description}" class="mt-5">
-                Service Description
-            </p>
-
-            <div class="d-flex justify-content-end align-items-center mt-4">
-
-                <form th:action="@{/service-provider/view-info/like/{serviceProviderId}(serviceProviderId=${serviceProviderInfo.id})}" method="post" class="mr-3">
-                    <button type="submit" class="btn btn-primary btn-sm me-3">
-                        <i class="bi bi-heart-fill"></i> Like
-                    </button>
-                </form>
-
-                <span th:text="|Likes: | + *{likesCount}" class="text-right">Likes Count</span>
+            <div>
+                <h5 class="text-muted">Description</h5>
+                <p th:text="*{description}" class="mt-4 mb-4">
+                    Service Description
+                </p>
             </div>
 
-            <div th:if="${likeMessage}" class="alert alert-success mt-3">
+            <hr>
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+
+                <th:block th:if="${isAuthor}">
+                    <a th:href="@{/service-provider/update-info/{serviceProviderId}(serviceProviderId=${serviceProviderInfo.id})}"
+                       class="btn btn-outline-success btn-lg m-4">
+                        Edit Information
+                    </a>
+                </th:block>
+
+                <div class="d-flex align-items-center">
+                    <form th:action="@{/service-provider/view-info/like/{serviceProviderId}(serviceProviderId=${serviceProviderInfo.id})}"
+                          method="post" class="mr-3">
+                        <button type="submit" class="btn btn-primary btn-sm me-3">
+                            <i class="bi bi-heart-fill"></i> Like
+                        </button>
+                    </form>
+
+                    <span th:text="|Likes: | + *{likesCount}" class="text-right">Likes Count</span>
+                </div>
+            </div>
+
+            <div th:if="${likeMessage}" class="alert alert-success mt-3 text-center">
                 <strong>Success!</strong> You liked this service provider.
             </div>
 
@@ -137,23 +157,14 @@
                 <h5 class="text-center">Add a Review</h5>
                 <form th:action="@{/service-provider/{id}/add-comment(id=${serviceProviderInfo.id})}" method="post">
                     <div class="form-group">
-                        <label for="comment">Your Comment:</label>
+                        <label for="comment">Your Review:</label>
                         <textarea class="form-control" id="comment" name="content" rows="4" required></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group text-center">
                         <button type="submit" class="btn btn-primary btn-block mt-3">Submit Review</button>
                     </div>
                 </form>
             </div>
-
-            <th:block th:if="${isAuthor}">
-                <div class="d-flex justify-content-between mt-4">
-                    <a th:href="@{/service-provider/edit/{id}(id = *{id})}"
-                       class="btn btn-primary btn-outline-dark btn-lg m-4">
-                        Edit Information
-                    </a>
-                </div>
-            </th:block>
 
         </div>
     </div>

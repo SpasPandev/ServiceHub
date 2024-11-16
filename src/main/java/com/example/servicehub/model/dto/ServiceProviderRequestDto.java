@@ -20,12 +20,6 @@ public class ServiceProviderRequestDto {
     @NotBlank(message = "Service name is required")
     private String serviceName;
 
-    @NotBlank(message = "Provider name should not be blank")
-    private String providerName;
-
-    @NotBlank(message = "Provider email should not be blank")
-    private String providerEmail;
-
     @NotBlank(message = "Provider phone number should not be blank")
     private String providerPhoneNumber;
 

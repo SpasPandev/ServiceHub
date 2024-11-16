@@ -2,6 +2,8 @@ package com.example.servicehub.controller.tymeleafController;
 
 import com.example.servicehub.config.AppUser;
 import com.example.servicehub.model.dto.CreateServiceProviderDto;
+import com.example.servicehub.model.dto.ServiceDto;
+import com.example.servicehub.model.dto.ServiceProviderRequestDto;
 import com.example.servicehub.service.ServiceProviderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,11 @@ public class ServiceProviderControllerTL {
     @ModelAttribute
     public CreateServiceProviderDto CreateServiceProviderDto() {
         return new CreateServiceProviderDto();
+    }
+
+    @ModelAttribute
+    public ServiceProviderRequestDto serviceProviderRequestDto() {
+        return new ServiceProviderRequestDto();
     }
 
     @GetMapping()
@@ -180,5 +187,56 @@ public class ServiceProviderControllerTL {
             return "service-provider-info";
         }
     }
+
+    @GetMapping("/update-info/{serviceProviderId}")
+    public String showEditServiceProvider(@PathVariable Long serviceProviderId,
+                                          @AuthenticationPrincipal AppUser appUser,
+                                          Model model) {
+
+        ResponseEntity<ServiceDto> response = serviceProviderService.viewServiceProviderInfo(serviceProviderId);
+
+        if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            return "redirect:/service-provider";
+        }
+
+        ServiceDto serviceProviderDto = response.getBody();
+
+        if (!serviceProviderService.isAuthorOnServiceProvider(serviceProviderId, appUser.getUsername())) {
+            return "redirect:/service-provider";
+        }
+
+        model.addAttribute("serviceProvider", serviceProviderDto);
+        model.addAttribute("servicesDropDown", serviceProviderService.getAllServiceNames().getBody());
+
+        return "service-provider-update-info";
+    }
+
+    @PostMapping("/update-info/{serviceProviderId}")
+    public String updateServiceProvider(
+            @PathVariable Long serviceProviderId,
+            @Valid @ModelAttribute("serviceProvider") ServiceProviderRequestDto serviceProviderRequestDto,
+            BindingResult bindingResult,
+            @AuthenticationPrincipal AppUser appUser,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("servicesDropDown", serviceProviderService.getAllServiceNames().getBody());
+            return "service-provider-update-info";
+        }
+
+        ResponseEntity<?> response = serviceProviderService.updateServiceProviderInfo(serviceProviderId, serviceProviderRequestDto, appUser);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+
+            redirectAttributes.addFlashAttribute("updatedMessage", true);
+            return "redirect:/service-provider/view-info/" + serviceProviderId;
+        }
+        else {
+            model.addAttribute("servicesDropDown", serviceProviderService.getAllServiceNames().getBody());
+            return "service-provider-update-info";
+        }
+    }
+
 
 }

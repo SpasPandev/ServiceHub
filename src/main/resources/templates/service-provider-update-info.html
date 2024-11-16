@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/commons::head"></head>
+
+<body>
+
+<!-- Navigation -->
+<header th:replace="fragments/commons::navigation"></header>
+<!-- End Navigation -->
+
+<div class="container rounded bg-white mt-5 mb-5 p-3">
+
+    <h3 class="text-center">Update information</h3>
+
+    <form th:action="@{/service-provider/update-info/{serviceProviderId}(serviceProviderId=${serviceProvider.id})}"
+          th:object="${serviceProvider}"
+          method="post">
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea th:field="*{description}" id="description" class="form-control mb-3" required
+                      rows="7" placeholder="Description of the service"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="providerPhoneNumber">Provider Phone</label>
+            <input type="text" id="providerPhoneNumber" th:field="*{providerPhoneNumber}" class="form-control mb-3"
+                   required/>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" th:field="*{location}" class="form-control mb-3" required/>
+        </div>
+
+        <div class="form-group">
+            <label for="serviceName">Service</label>
+            <select th:field="*{serviceName}" id="serviceName" class="form-control  mb-3">
+                <option th:each="service : ${servicesDropDown}" th:value="${service}" th:text="${service}"></option>
+            </select>
+        </div>
+
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+
+
+</div>
+
+</body>
+</html>
