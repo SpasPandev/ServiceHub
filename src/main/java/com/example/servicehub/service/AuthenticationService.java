@@ -89,7 +89,7 @@ public class AuthenticationService {
         tokenRepository.save(token);
     }
 
-    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
+    public ResponseEntity<?> login(LoginRequestDto loginRequestDto) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(),
@@ -99,7 +99,7 @@ public class AuthenticationService {
 
         if (user.isDeleted()) {
 
-            throw new UserDeletedException("This account has been deleted!");
+            return new ResponseEntity<>("This account has been deleted!", HttpStatus.GONE);
         }
 
         AppUser appUser = new AppUser(user);
