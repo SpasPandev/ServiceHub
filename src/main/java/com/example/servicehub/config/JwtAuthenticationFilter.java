@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -40,87 +41,77 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-        String jwt = null;
-        String email;
+        // Retrieve JWT from Authorization header or cookies
+        String jwt = extractJwt(request);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-
-//            ////////////////////////////////////
-
-            // Retrieve JWT token from the cookie
-            Cookie[] cookies = request.getCookies();
-//            String jwt = null;
-
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("jwtToken".equals(cookie.getName())) {
-                        jwt = cookie.getValue();
-                        break;
-                    }
-                }
-            }
-
-            if (jwt == null) {
-
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            // Set the authentication context
-            email = jwtService.extractEmail(jwt);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-            if (jwt != null && jwtService.isTokenValid(jwt, userDetails)) {
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-
+        if (jwt == null) {
             filterChain.doFilter(request, response);
-
-//            ///////////////////////////
-//            filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
-
-        email = jwtService.extractEmail(jwt);
+        // Extract email and validate token
+        String email = jwtService.extractEmail(jwt);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-
-            boolean isTokenValid = tokenRepository.findByToken(jwt)
-                    .map(t -> !t.isExpired() && !t.isRevoked())
-                    .orElse(false);
-
-            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
-
-                //  checkIfUserIsDeleted
-                User user = userService.findUserByEmail(email);
-                if (user.isDeleted()) {
-                    SecurityContextHolder.clearContext();
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    response.getWriter().write("User is deleted and cannot perform any actions!");
-                    return;
-                }
-
-                userService.findUserByEmail(email);
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+            authenticateUser(request, response, jwt, email);
         }
 
         filterChain.doFilter(request, response);
+    }
 
+    private String extractJwt(HttpServletRequest request) {
+
+        String authHeader = request.getHeader("Authorization");
+
+        // Extract JWT from Authorization header
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+
+        // Retrieve JWT from the cookies if not found in the Authorization header
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("jwtToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        // JWT not found
+        return null;
+    }
+
+    private void authenticateUser(HttpServletRequest request, HttpServletResponse response, String jwt, String email) throws IOException {
+
+        Optional<UserDetails> userDetailsOpt = Optional.ofNullable(userDetailsService.loadUserByUsername(email));
+
+        // Token is invalid or user doesn't exist, skip authentication
+        if (userDetailsOpt.isEmpty() || !jwtService.isTokenValid(jwt, userDetailsOpt.get())) {
+            return;
+        }
+
+        boolean isTokenValid = tokenRepository.findByToken(jwt)
+                .map(t -> !t.isExpired() && !t.isRevoked())
+                .orElse(false);
+
+        // If token is expired or revoked
+        if (!isTokenValid) {
+            return;
+        }
+
+        User user = userService.findUserByEmail(email);
+
+        if (user.isDeleted()) {
+            SecurityContextHolder.clearContext();
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.getWriter().write("User is deleted and cannot perform any actions!");
+            return;
+        }
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetailsOpt.get(), null, userDetailsOpt.get().getAuthorities());
+
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 }
